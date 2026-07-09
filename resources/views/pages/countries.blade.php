@@ -21,37 +21,27 @@
         </thead>
 
         <tbody>
-            <tr>
-                <td class="border p-3">Germany</td>
-                <td class="border p-3">$4.7T</td>
-                <td class="border p-3">2.4%</td>
-                <td class="border p-3">84 Million</td>
-                <td class="border p-3">EUR</td>
-            </tr>
+
+        @forelse($countries as $country)
 
             <tr>
-                <td class="border p-3">China</td>
-                <td class="border p-3">$18T</td>
-                <td class="border p-3">0.7%</td>
-                <td class="border p-3">1.4 Billion</td>
-                <td class="border p-3">CNY</td>
+                <td class="border p-3">{{ $country->name }}</td>
+                <td class="border p-3">{{ $country->gdp }}</td>
+                <td class="border p-3">{{ $country->inflation }}%</td>
+                <td class="border p-3">{{ $country->population }}</td>
+                <td class="border p-3">{{ $country->currency }}</td>
             </tr>
 
-            <tr>
-                <td class="border p-3">Indonesia</td>
-                <td class="border p-3">$1.5T</td>
-                <td class="border p-3">3.2%</td>
-                <td class="border p-3">280 Million</td>
-                <td class="border p-3">IDR</td>
-            </tr>
+        @empty
 
             <tr>
-                <td class="border p-3">Australia</td>
-                <td class="border p-3">$1.8T</td>
-                <td class="border p-3">2.9%</td>
-                <td class="border p-3">27 Million</td>
-                <td class="border p-3">AUD</td>
+                <td colspan="5" class="border p-3 text-center">
+                    Tidak ada data negara.
+                </td>
             </tr>
+
+        @endforelse
+
         </tbody>
 
     </table>

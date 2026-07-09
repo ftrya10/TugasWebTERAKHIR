@@ -14,7 +14,7 @@
         @foreach($countries as $item)
 
         <option value="{{ $item->id }}"
-            {{ $country && $country->id == $item->id ? 'selected' : '' }}>
+            {{ $country->id == $item->id ? 'selected' : '' }}>
             {{ $item->name }}
         </option>
 
@@ -26,41 +26,77 @@
 <div class="grid grid-cols-3 gap-6 mt-6">
 
     <div class="bg-white shadow rounded-xl p-5">
-        <h2>GDP</h2>
+        <h2 class="font-semibold">GDP</h2>
         <p class="text-2xl font-bold">
             {{ $country->gdp }}
         </p>
     </div>
 
     <div class="bg-white shadow rounded-xl p-5">
-        <h2>Inflation</h2>
+        <h2 class="font-semibold">Inflation</h2>
         <p class="text-2xl font-bold">
             {{ $country->inflation }} %
         </p>
     </div>
 
     <div class="bg-white shadow rounded-xl p-5">
-        <h2>Population</h2>
+        <h2 class="font-semibold">Population</h2>
         <p class="text-2xl font-bold">
             {{ $country->population }}
         </p>
     </div>
 
     <div class="bg-white shadow rounded-xl p-5">
-        <h2>Currency</h2>
+        <h2 class="font-semibold">Currency</h2>
         <p class="text-2xl font-bold">
             {{ $country->currency }}
         </p>
     </div>
 
     <div class="bg-white shadow rounded-xl p-5">
-        <h2>Weather</h2>
-        <p class="text-2xl font-bold">
-            Belum tersedia
-        </p>
+        <h2 class="font-semibold">Current Weather</h2>
+
+        @if($country->weather)
+
+            <p class="text-xl font-bold">
+                {{ $country->weather->temperature }}
+            </p>
+
+            <p>
+                {{ $country->weather->condition }}
+            </p>
+
+        @else
+
+            <p>No weather data.</p>
+
+        @endif
+
+    </div>
+
+    <div class="bg-white shadow rounded-xl p-5">
+        <h2 class="font-semibold">Exchange Rate</h2>
+
+        @if($country->exchangeRate)
+
+            <p class="text-xl font-bold">
+                {{ $country->exchangeRate->currency }}
+            </p>
+
+            <p>
+                {{ $country->exchangeRate->rate }}
+            </p>
+
+        @else
+
+            <p>No exchange data.</p>
+
+        @endif
+
     </div>
 
 </div>
+
 
 <h2 class="text-2xl font-bold mt-8">
     Risk Scoring Engine
@@ -68,28 +104,79 @@
 
 <div class="bg-white shadow rounded-xl p-6 mt-4">
 
-    <p>Weather : -</p>
-    <p>Inflation : -</p>
-    <p>Exchange Rate : -</p>
-    <p>News Sentiment : -</p>
+@if($country->riskScore)
+
+    <p>Weather Score :
+        <b>{{ $country->riskScore->weather_score }}</b>
+    </p>
+
+    <p>Inflation Score :
+        <b>{{ $country->riskScore->inflation_score }}</b>
+    </p>
+
+    <p>Exchange Score :
+        <b>{{ $country->riskScore->exchange_score }}</b>
+    </p>
+
+    <p>News Score :
+        <b>{{ $country->riskScore->news_score }}</b>
+    </p>
 
     <hr class="my-4">
 
-    <h1 class="text-3xl font-bold">
-        {{ $country->name }}
-    </h1>
+    <h2 class="text-3xl font-bold">
 
-    <h2 class="text-xl mt-2">
-        Risk Score belum dihitung
+        Total Risk :
+        {{ $country->riskScore->total_score }}
+
     </h2>
+
+    <h3 class="text-xl mt-3">
+
+        Status :
+        {{ $country->riskScore->status }}
+
+    </h3>
+
+@else
+
+    <p>Risk score belum tersedia.</p>
+
+@endif
+
+</div>
+
+<h2 class="text-2xl font-bold mt-8">
+    Latest News
+</h2>
+
+<div class="bg-white shadow rounded-xl p-6 mt-4">
+
+@if($country->news)
+
+    <h3 class="font-bold">
+        {{ $country->news->title }}
+    </h3>
+
+    <p>
+        Sentiment :
+        {{ $country->news->sentiment }}
+    </p>
+
+@else
+
+    <p>Tidak ada berita.</p>
+
+@endif
 
 </div>
 
 @else
 
-<div class="bg-yellow-100 border border-yellow-400 p-5 rounded-lg">
-    <h2 class="text-xl font-bold">Belum ada data negara</h2>
-    <p>Silakan isi tabel <b>countries</b> terlebih dahulu.</p>
+<div class="bg-yellow-100 border border-yellow-400 p-5 rounded">
+
+Belum ada data negara.
+
 </div>
 
 @endif
