@@ -1,62 +1,57 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\TradeController;
+use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PortController;
+use App\Http\Controllers\RiskController;
+use App\Http\Controllers\FavoriteController;
 
 Route::redirect('/', '/dashboard');
 
+Route::middleware(['auth'])->group(function () {
 
-Route::middleware(['auth'])->group(function(){
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-
-    // Dashboard utama
-    Route::get('/dashboard',
-        [DashboardController::class,'index']
-    )->name('dashboard');
-
-
-    // Menu Countries
-    Route::view('/countries', 'pages.countries')
+    // Countries
+    Route::get('/countries', [CountryController::class, 'index'])
         ->name('countries');
 
-
-    // Menu Trade Analysis
-    Route::view('/trade-analysis', 'pages.trade')
+    // Trade Analysis
+    Route::get('/trade-analysis', [TradeController::class, 'index'])
         ->name('trade');
 
-
-    // Menu Weather
-    Route::view('/weather', 'pages.weather')
+    // Weather
+    Route::get('/weather', [WeatherController::class, 'index'])
         ->name('weather');
 
-
-    // Menu Exchange Rate
-    Route::view('/exchange-rate', 'pages.exchange')
+    // Exchange Rate
+    Route::get('/exchange-rate', [CurrencyController::class, 'index'])
         ->name('exchange');
 
-
-    // Menu Global News
-    Route::view('/global-news', 'pages.news')
+    // Global News
+    Route::get('/global-news', [NewsController::class, 'index'])
         ->name('news');
 
-
-    // Menu Port Map
-    Route::view('/port-map', 'pages.port')
+    // Port Map
+    Route::get('/port-map', [PortController::class, 'index'])
         ->name('port');
 
-
-    // Menu Risk Analysis
-    Route::view('/risk-analysis', 'pages.risk')
+    // Risk Analysis
+    Route::get('/risk-analysis', [RiskController::class, 'index'])
         ->name('risk');
 
-
-    // Menu Favorites
-    Route::view('/favorites', 'pages.favorites')
+    // Favorites
+    Route::get('/favorites', [FavoriteController::class, 'index'])
         ->name('favorites');
 
-
 });
-
 
 require __DIR__.'/auth.php';
