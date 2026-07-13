@@ -8,42 +8,82 @@
 
 <div class="bg-white rounded-xl shadow p-6">
 
-    <table class="table-auto w-full">
+    <table class="table-auto w-full border">
 
-        <tr class="border-b">
-            <td class="py-3 font-semibold">Country</td>
-            <td>Germany</td>
-        </tr>
+        <thead class="bg-gray-200">
 
-        <tr class="border-b">
-            <td class="py-3 font-semibold">Weather Score</td>
-            <td>10</td>
-        </tr>
+            <tr>
+                <th class="border p-3">Country</th>
+                <th class="border p-3">Weather Score</th>
+                <th class="border p-3">Inflation Score</th>
+                <th class="border p-3">Exchange Score</th>
+                <th class="border p-3">News Score</th>
+                <th class="border p-3">Total Score</th>
+                <th class="border p-3">Status</th>
+            </tr>
 
-        <tr class="border-b">
-            <td class="py-3 font-semibold">Inflation Score</td>
-            <td>15</td>
-        </tr>
+        </thead>
 
-        <tr class="border-b">
-            <td class="py-3 font-semibold">Exchange Score</td>
-            <td>20</td>
-        </tr>
+        <tbody>
 
-        <tr class="border-b">
-            <td class="py-3 font-semibold">News Score</td>
-            <td>10</td>
-        </tr>
+            @foreach($countries as $country)
 
-        <tr class="border-b">
-            <td class="py-3 font-semibold">Total Risk Score</td>
-            <td>55</td>
-        </tr>
+            <tr>
 
-        <tr>
-            <td class="py-3 font-semibold">Status</td>
-            <td class="text-green-600 font-bold">Low Risk</td>
-        </tr>
+                <td class="border p-3">
+                    {{ $country->name }}
+                </td>
+
+                <td class="border p-3">
+                    {{ optional($country->riskScore)->weather_score }}
+                </td>
+
+                <td class="border p-3">
+                    {{ optional($country->riskScore)->inflation_score }}
+                </td>
+
+                <td class="border p-3">
+                    {{ optional($country->riskScore)->exchange_score }}
+                </td>
+
+                <td class="border p-3">
+                    {{ optional($country->riskScore)->news_score }}
+                </td>
+
+                <td class="border p-3 font-bold">
+                    {{ optional($country->riskScore)->total_score }}
+                </td>
+
+                <td class="border p-3">
+
+                    @php
+                        $status = optional($country->riskScore)->status;
+                    @endphp
+
+                    @if($status == 'Low Risk')
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
+                            {{ $status }}
+                        </span>
+
+                    @elseif($status == 'Medium Risk')
+                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-semibold">
+                            {{ $status }}
+                        </span>
+
+                    @elseif($status == 'High Risk')
+                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full font-semibold">
+                            {{ $status }}
+                        </span>
+
+                    @endif
+
+                </td>
+
+            </tr>
+
+            @endforeach
+
+        </tbody>
 
     </table>
 
