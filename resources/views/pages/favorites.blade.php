@@ -6,37 +6,123 @@
     Favorites
 </h1>
 
+{{-- Summary Cards --}}
+<div class="grid grid-cols-3 gap-6 mb-6">
+
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-gray-500">Favorite Countries</p>
+        <h2 class="text-3xl font-bold">2</h2>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-gray-500">Low Risk</p>
+        <h2 class="text-3xl font-bold text-green-600">1</h2>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-gray-500">Medium Risk</p>
+        <h2 class="text-3xl font-bold text-yellow-600">1</h2>
+    </div>
+
+</div>
+
+{{-- Search --}}
+<div class="flex justify-end mb-4">
+
+    <input
+        type="text"
+        placeholder="Search Favorite..."
+        class="border rounded-lg px-4 py-2 w-64">
+
+</div>
+
 <div class="bg-white rounded-xl shadow p-6">
 
-    <h2 class="text-xl font-semibold mb-4">
-        Favorite Countries
-    </h2>
+<table class="table-auto w-full border-collapse">
 
-    <table class="table-auto w-full border-collapse">
+<thead class="bg-gray-200">
 
-        <thead>
-            <tr class="bg-gray-100">
-                <th class="border p-3 text-left">Country</th>
-                <th class="border p-3 text-left">Currency</th>
-                <th class="border p-3 text-left">Risk Status</th>
-            </tr>
-        </thead>
+<tr>
 
-        <tbody>
-            <tr>
-                <td class="border p-3">Germany</td>
-                <td class="border p-3">EUR</td>
-                <td class="border p-3 text-green-600 font-bold">Low Risk</td>
-            </tr>
+<th class="border p-3">Country</th>
 
-            <tr>
-                <td class="border p-3">Indonesia</td>
-                <td class="border p-3">IDR</td>
-                <td class="border p-3 text-yellow-600 font-bold">Medium Risk</td>
-            </tr>
-        </tbody>
+<th class="border p-3">Currency</th>
 
-    </table>
+<th class="border p-3">Risk Status</th>
+
+<th class="border p-3">Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr class="hover:bg-gray-100">
+
+<td class="border p-3 font-semibold">
+🇩🇪 Germany
+</td>
+
+<td class="border p-3">
+EUR
+</td>
+
+<td class="border p-3">
+
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+Low Risk
+</span>
+
+</td>
+
+<td class="border p-3">
+
+<a href="#"
+class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+
+View
+
+</a>
+
+</td>
+
+</tr>
+
+<tr class="hover:bg-gray-100">
+
+<td class="border p-3 font-semibold">
+🇮🇩 Indonesia
+</td>
+
+<td class="border p-3">
+IDR
+</td>
+
+<td class="border p-3">
+
+<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
+Medium Risk
+</span>
+
+</td>
+
+<td class="border p-3">
+
+<a href="#"
+class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+
+View
+
+</a>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 </div>
 
