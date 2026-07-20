@@ -11,17 +11,23 @@
 
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-gray-500">Currencies</p>
-        <h2 class="text-3xl font-bold">4</h2>
+        <h2 class="text-3xl font-bold">
+            {{ $countries->filter(fn($c) => !empty($c->name) && $c->name != '-' && trim($c->name) != '')->count() }}
+        </h2>
     </div>
 
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-gray-500">Highest Rate</p>
-        <h2 class="text-2xl font-bold">EUR</h2>
+        <h2 class="text-2xl font-bold">
+            {{ optional($countries->filter(fn($c) => !empty($c->name) && $c->name != '-' && trim($c->name) != '')->sortByDesc(fn($c)=>optional($c->exchangeRate)->rate)->first()->exchangeRate)->currency ?? '-' }}
+        </h2>
     </div>
 
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-gray-500">Lowest Rate</p>
-        <h2 class="text-2xl font-bold">IDR</h2>
+        <h2 class="text-2xl font-bold">
+            {{ optional($countries->filter(fn($c) => !empty($c->name) && $c->name != '-' && trim($c->name) != '')->sortBy(fn($c)=>optional($c->exchangeRate)->rate)->first()->exchangeRate)->currency ?? '-' }}
+        </h2>
     </div>
 
     <div class="bg-white rounded-xl shadow p-5">
@@ -52,15 +58,10 @@
 <tr>
 
 <th class="border p-3">Country</th>
-
 <th class="border p-3">Currency</th>
-
 <th class="border p-3">Exchange Rate</th>
-
 <th class="border p-3">Exchange Score</th>
-
 <th class="border p-3">Status</th>
-
 <th class="border p-3">Action</th>
 
 </tr>
@@ -69,137 +70,66 @@
 
 <tbody>
 
-<tr class="hover:bg-gray-100">
-
-<td class="border p-3 font-semibold">
-🇩🇪 Germany
-</td>
-
-<td class="border p-3">
-EUR
-</td>
-
-<td class="border p-3">
-1 EUR = 1.08 USD
-</td>
-
-<td class="border p-3 font-bold">
-20
-</td>
-
-<td class="border p-3">
-<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-Stable
-</span>
-</td>
-
-<td class="border p-3">
-<a href="#"
-class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
-</td>
-
-</tr>
+@foreach($countries as $country)
+    {{-- VALIDASI: Skip baris jika nama negara kosong atau hanya strip --}}
+    @if(empty($country->name) || $country->name == '-' || trim($country->name) == '')
+        @continue
+    @endif
 
 <tr class="hover:bg-gray-100">
 
 <td class="border p-3 font-semibold">
-🇨🇳 China
+    {{ $country->name }}
 </td>
 
 <td class="border p-3">
-CNY
+    {{ optional($country->exchangeRate)->currency }}
 </td>
 
 <td class="border p-3">
-1 CNY = 0.14 USD
+    {{ optional($country->exchangeRate)->rate }}
 </td>
 
 <td class="border p-3 font-bold">
-15
+    {{ optional($country->exchangeRate)->exchange_score }}
 </td>
 
 <td class="border p-3">
-<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
-Moderate
-</span>
+
+    @php
+        $score = optional($country->exchangeRate)->exchange_score;
+    @endphp
+
+    @if($score <= 15)
+        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+            Stable
+        </span>
+
+    @elseif($score <= 25)
+        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
+            Moderate
+        </span>
+
+    @else
+        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+            Volatile
+        </span>
+    @endif
+
 </td>
 
 <td class="border p-3">
-<a href="#"
-class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
+
+    <a href="{{ route('dashboard', ['country' => $country->id]) }}"
+       class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+        View
+    </a>
+
 </td>
 
 </tr>
 
-<tr class="hover:bg-gray-100">
-
-<td class="border p-3 font-semibold">
-🇮🇩 Indonesia
-</td>
-
-<td class="border p-3">
-IDR
-</td>
-
-<td class="border p-3">
-1 USD = 16,250 IDR
-</td>
-
-<td class="border p-3 font-bold">
-28
-</td>
-
-<td class="border p-3">
-<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full">
-Volatile
-</span>
-</td>
-
-<td class="border p-3">
-<a href="#"
-class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
-</td>
-
-</tr>
-
-<tr class="hover:bg-gray-100">
-
-<td class="border p-3 font-semibold">
-🇦🇺 Australia
-</td>
-
-<td class="border p-3">
-AUD
-</td>
-
-<td class="border p-3">
-1 AUD = 0.67 USD
-</td>
-
-<td class="border p-3 font-bold">
-18
-</td>
-
-<td class="border p-3">
-<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-Stable
-</span>
-</td>
-
-<td class="border p-3">
-<a href="#"
-class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
-</td>
-
-</tr>
+@endforeach
 
 </tbody>
 

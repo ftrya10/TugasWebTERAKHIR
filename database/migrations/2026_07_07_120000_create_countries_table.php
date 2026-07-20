@@ -13,14 +13,19 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            $table->string('flag')->nullable();      // URL atau nama file bendera
-            $table->string('gdp');
-            $table->decimal('inflation', 5, 2);
-            $table->string('population');
-            $table->string('currency');
+            $table->string('code', 3);
+            $table->string('flag')->nullable();
+            $table->string('region')->nullable();
+
+            $table->string('gdp')->nullable();
+            $table->decimal('inflation', 5, 2)->nullable();
+            $table->string('population')->nullable();
+            $table->string('currency')->nullable();
+
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
 
             $table->timestamps();
-
         });
     }
 

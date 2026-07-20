@@ -6,44 +6,42 @@
     Global News
 </h1>
 
-{{-- Summary Cards --}}
+{{-- Summary --}}
 <div class="grid grid-cols-4 gap-6 mb-6">
 
     <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-gray-500">Total News</p>
-        <h2 class="text-3xl font-bold">4</h2>
+        <p class="text-gray-500">Countries</p>
+        <h2 class="text-3xl font-bold">
+            {{ $countries->filter(fn($c) => !empty($c->name) && $c->name != '-' && trim($c->name) != '')->count() }}
+        </h2>
     </div>
 
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-gray-500">Positive News</p>
-        <h2 class="text-3xl font-bold text-green-600">2</h2>
-    </div>
-
-    <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-gray-500">Neutral News</p>
-        <h2 class="text-3xl font-bold text-yellow-600">1</h2>
+        <h2 class="text-3xl font-bold text-green-600">
+            {{ $countries->filter(fn($c) => !empty($c->name) && $c->name != '-' && trim($c->name) != '')->filter(fn($c)=>optional($c->news)->sentiment=='Positive')->count() }}
+        </h2>
     </div>
 
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-gray-500">Negative News</p>
-        <h2 class="text-3xl font-bold text-red-600">1</h2>
+        <h2 class="text-3xl font-bold text-red-600">
+            {{ $countries->filter(fn($c) => !empty($c->name) && $c->name != '-' && trim($c->name) != '')->filter(fn($c)=>optional($c->news)->sentiment=='Negative')->count() }}
+        </h2>
     </div>
 
-</div>
-
-{{-- Search --}}
-<div class="flex justify-end mb-4">
-
-    <input
-        type="text"
-        placeholder="Search Country..."
-        class="border rounded-lg px-4 py-2 w-64">
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-gray-500">Updated</p>
+        <h2 class="text-2xl font-bold text-blue-600">
+            Today
+        </h2>
+    </div>
 
 </div>
 
 <div class="bg-white rounded-xl shadow p-6">
 
-<table class="table-auto w-full border-collapse">
+<table class="table-auto w-full border">
 
 <thead class="bg-gray-200">
 
@@ -53,13 +51,9 @@
 
 <th class="border p-3">Headline</th>
 
-<th class="border p-3">Source</th>
-
 <th class="border p-3">Sentiment</th>
 
 <th class="border p-3">News Score</th>
-
-<th class="border p-3">Action</th>
 
 </tr>
 
@@ -67,125 +61,53 @@
 
 <tbody>
 
+@foreach($countries as $country)
+    {{-- VALIDASI: Skip baris jika nama negara kosong atau hanya strip --}}
+    @if(empty($country->name) || $country->name == '-' || trim($country->name) == '')
+        @continue
+    @endif
+
 <tr class="hover:bg-gray-100">
 
-<td class="border p-3 font-semibold">Germany</td>
-
 <td class="border p-3">
-Germany Economy Shows Positive Growth
+{{ $country->name }}
 </td>
 
 <td class="border p-3">
-Reuters
+{{ optional($country->news)->title }}
 </td>
 
 <td class="border p-3">
-<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+
+@if(optional($country->news)->sentiment=='Positive')
+
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
 Positive
 </span>
-</td>
 
-<td class="border p-3 font-bold">
-10
-</td>
+@elseif(optional($country->news)->sentiment=='Negative')
 
-<td class="border p-3">
-<a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
-</td>
-
-</tr>
-
-<tr class="hover:bg-gray-100">
-
-<td class="border p-3 font-semibold">China</td>
-
-<td class="border p-3">
-China Manufacturing Remains Stable
-</td>
-
-<td class="border p-3">
-Bloomberg
-</td>
-
-<td class="border p-3">
-<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
-Neutral
-</span>
-</td>
-
-<td class="border p-3 font-bold">
-15
-</td>
-
-<td class="border p-3">
-<a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
-</td>
-
-</tr>
-
-<tr class="hover:bg-gray-100">
-
-<td class="border p-3 font-semibold">Indonesia</td>
-
-<td class="border p-3">
-Export Activity Increased This Quarter
-</td>
-
-<td class="border p-3">
-CNBC Indonesia
-</td>
-
-<td class="border p-3">
-<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-Positive
-</span>
-</td>
-
-<td class="border p-3 font-bold">
-8
-</td>
-
-<td class="border p-3">
-<a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
-</td>
-
-</tr>
-
-<tr class="hover:bg-gray-100">
-
-<td class="border p-3 font-semibold">Australia</td>
-
-<td class="border p-3">
-Storm Disrupts Major Shipping Routes
-</td>
-
-<td class="border p-3">
-BBC News
-</td>
-
-<td class="border p-3">
-<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full">
+<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
 Negative
 </span>
+
+@else
+
+<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
+Neutral
+</span>
+
+@endif
+
 </td>
 
 <td class="border p-3 font-bold">
-22
-</td>
-
-<td class="border p-3">
-<a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-View
-</a>
+{{ optional($country->news)->news_score }}
 </td>
 
 </tr>
+
+@endforeach
 
 </tbody>
 

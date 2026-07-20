@@ -79,58 +79,50 @@
 
 @foreach($countries as $country)
 
+    @if(empty($country->name) || $country->name == '-' || trim($country->name) == '')
+        @continue
+    @endif
+
 <tr class="hover:bg-gray-100">
 
 <td class="border p-3 font-semibold">
-
-{{ $country->name }}
-
+    {{ $country->name }}
 </td>
 
 <td class="border p-3">
-
-{{ $country->gdp }}
-
+    {{ $country->gdp }}
 </td>
 
 <td class="border p-3">
-
-{{ $country->inflation }}%
-
+    {{ $country->inflation }}%
 </td>
 
 <td class="border p-3">
-
-{{ $country->currency }}
-
+    {{ $country->currency }}
 </td>
 
 <td class="border p-3 font-bold">
-
-{{ optional($country->riskScore)->total_score }}
-
+    {{ optional($country->riskScore)->total_score ?? '-' }}
 </td>
 
 <td class="border p-3">
 
 @if(optional($country->riskScore)->status == 'Low Risk')
-
-<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-Low Risk
-</span>
-
+    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+        Low Risk
+    </span>
 @elseif(optional($country->riskScore)->status == 'Medium Risk')
-
-<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
-Medium Risk
-</span>
-
+    <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
+        Medium Risk
+    </span>
+@elseif(optional($country->riskScore)->status == 'High Risk')
+    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+        High Risk
+    </span>
 @else
-
-<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-High Risk
-</span>
-
+    <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+        -
+    </span>
 @endif
 
 </td>
@@ -138,10 +130,8 @@ High Risk
 <td class="border p-3">
 
 <a href="{{ route('dashboard', ['country' => $country->id]) }}"
-class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-
-View
-
+   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+    View
 </a>
 
 </td>

@@ -9,44 +9,46 @@ class NewsSeeder extends Seeder
 {
     public function run(): void
     {
-        News::insert([
+        // Hapus data lama terlebih dahulu agar fresh saat di-seed ulang
+        News::truncate();
 
+        News::insert([
             [
                 'country_id' => 1,
-                'title' => 'Germany Export Growth',
+                // Mengandung kata 'growth' & 'stable' (Positif)
+                'title' => 'Germany Export Growth reported stable amid European trade expansion.',
                 'sentiment' => 'Positive',
-                'news_score' => 3,
+                'news_score' => 20,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
             [
                 'country_id' => 2,
-                'title' => 'China Trade Policy',
+                // Berita umum (Netral)
+                'title' => 'China Trade Policy announcement regarding global port regulations.',
                 'sentiment' => 'Neutral',
-                'news_score' => 7,
+                'news_score' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
             [
                 'country_id' => 3,
-                'title' => 'Indonesia Economic Update',
+                // Mengandung kata 'crisis' & 'delay' (Negatif)
+                'title' => 'Indonesia Economic Update: Shipping crisis causes massive logistics delay.',
                 'sentiment' => 'Negative',
-                'news_score' => 10,
+                'news_score' => 20,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
             [
                 'country_id' => 4,
-                'title' => 'Australia Export Market',
+                // Mengandung kata 'profit' & 'improve' (Positif)
+                'title' => 'Australia Export Market improves profit margins for maritime shipping.',
                 'sentiment' => 'Positive',
-                'news_score' => 2,
+                'news_score' => 20,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
         ]);
     }
 }
