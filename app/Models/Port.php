@@ -4,17 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class News extends Model
+class Port extends Model
 {
+
     protected $fillable = [
+
         'country_id',
-        'title',
-        'sentiment',
-        'news_score',
+        'name',
+        'city',
+        'latitude',
+        'longitude',
+        'status',
+        'description'
+
     ];
+
 
     public function country()
     {
         return $this->belongsTo(Country::class);
     }
+
 }

@@ -2,183 +2,90 @@
 
 @section('content')
 
-<h1 class="text-3xl font-bold mb-6">
-    Global Country Dashboard
-</h1>
+<h1 class="text-3xl font-bold mb-6">Global Country Dashboard</h1>
 
-@if($countries->count())
+@if($countries && $countries->count())
 
-<form method="GET">
-    <select name="country" class="border rounded p-2" onchange="this.form.submit()">
+    {{-- Dropdown Pilihan Negara --}}
+    <form method="GET" action="{{ route('dashboard') }}" id="countryForm">
+        <select name="country" class="border rounded-lg px-4 py-2 bg-white shadow-sm cursor-pointer" onchange="this.form.submit()">
+            @foreach($countries as $item)
+                <option value="{{ $item->id }}" {{ optional($country)->id == $item->id ? 'selected' : '' }}>
+                    {{ $item->name }}
+                </option>
+            @endforeach
+        </select>
+    </form>
 
-        @foreach($countries as $item)
-
-        <option value="{{ $item->id }}"
-            {{ $country->id == $item->id ? 'selected' : '' }}>
-            {{ $item->name }}
-        </option>
-
-        @endforeach
-
-    </select>
-</form>
-
-<div class="grid grid-cols-3 gap-6 mt-6">
-
-    <div class="bg-white shadow rounded-xl p-5">
-        <h2 class="font-semibold">GDP</h2>
-        <p class="text-2xl font-bold">
-            {{ $country->gdp }}
-        </p>
+    <div id="map-config" 
+         data-lat="{{ $country->latitude ?? -6.2088 }}" 
+         data-lng="{{ $country->longitude ?? 106.8456 }}" 
+         data-name="{{ $country->name ?? 'Country' }}">
     </div>
 
-    <div class="bg-white shadow rounded-xl p-5">
-        <h2 class="font-semibold">Inflation</h2>
-        <p class="text-2xl font-bold">
-            {{ $country->inflation }} %
-        </p>
+    <div class="grid grid-cols-12 gap-6 mt-6">
+        
+        {{-- Sisi Kiri (Data Ekonomi) --}}
+        <div class="col-span-12 lg:col-span-6 space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white shadow rounded-xl p-5">
+                    <h2 class="font-semibold text-gray-500">GDP</h2>
+                    <p class="text-2xl font-bold mt-2">{{ $country->gdp ? '$' . number_format((float)$country->gdp) : '-' }}</p>
+                </div>
+                <div class="bg-white shadow rounded-xl p-5">
+                    <h2 class="font-semibold text-gray-500">Inflation</h2>
+                    <p class="text-2xl font-bold mt-2">{{ $country->inflation ?? '0' }}%</p>
+                </div>
+                <div class="bg-white shadow rounded-xl p-5">
+                    <h2 class="font-semibold text-gray-500">Currency</h2>
+                    <p class="text-2xl font-bold mt-2">{{ $country->currency ?? '-' }}</p>
+                </div>
+                <div class="bg-white shadow rounded-xl p-5">
+                    <h2 class="font-semibold text-gray-500">Weather</h2>
+                    <p class="text-2xl font-bold mt-2">{{ $country->weather->temperature ?? '-' }}°C</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Sisi Kanan (Peta) --}}
+        <div class="col-span-12 lg:col-span-6">
+            <div class="bg-white shadow rounded-xl p-5">
+                <h2 class="text-xl font-bold mb-4">🌍 Interactive Map</h2>
+                <div id="map" class="rounded-lg w-full" style="height: 280px;"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="bg-white shadow rounded-xl p-5">
-        <h2 class="font-semibold">Population</h2>
-        <p class="text-2xl font-bold">
-            {{ $country->population }}
-        </p>
-    </div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const config = document.getElementById('map-config');
+            const lat = parseFloat(config.dataset.lat) || -6.2088;
+            const lng = parseFloat(config.dataset.lng) || 106.8456;
+            const name = config.dataset.name || 'Country';
 
-    <div class="bg-white shadow rounded-xl p-5">
-        <h2 class="font-semibold">Currency</h2>
-        <p class="text-2xl font-bold">
-            {{ $country->currency }}
-        </p>
-    </div>
+            // Bersihkan instance peta sebelumnya jika ada (untuk mencegah error saat ganti negara)
+            const container = L.DomUtil.get('map');
+            if(container != null){ container._leaflet_id = null; }
 
-    <div class="bg-white shadow rounded-xl p-5">
-        <h2 class="font-semibold">Current Weather</h2>
+            const map = L.map('map').setView([lat, lng], 4);
 
-        @if($country->weather)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
 
-            <p class="text-xl font-bold">
-                {{ $country->weather->temperature }}
-            </p>
-
-            <p>
-                {{ $country->weather->condition }}
-            </p>
-
-        @else
-
-            <p>No weather data.</p>
-
-        @endif
-
-    </div>
-
-    <div class="bg-white shadow rounded-xl p-5">
-        <h2 class="font-semibold">Exchange Rate</h2>
-
-        @if($country->exchangeRate)
-
-            <p class="text-xl font-bold">
-                {{ $country->exchangeRate->currency }}
-            </p>
-
-            <p>
-                {{ $country->exchangeRate->rate }}
-            </p>
-
-        @else
-
-            <p>No exchange data.</p>
-
-        @endif
-
-    </div>
-
-</div>
-
-
-<h2 class="text-2xl font-bold mt-8">
-    Risk Scoring Engine
-</h2>
-
-<div class="bg-white shadow rounded-xl p-6 mt-4">
-
-@if($country->riskScore)
-
-    <p>Weather Score :
-        <b>{{ $country->riskScore->weather_score }}</b>
-    </p>
-
-    <p>Inflation Score :
-        <b>{{ $country->riskScore->inflation_score }}</b>
-    </p>
-
-    <p>Exchange Score :
-        <b>{{ $country->riskScore->exchange_score }}</b>
-    </p>
-
-    <p>News Score :
-        <b>{{ $country->riskScore->news_score }}</b>
-    </p>
-
-    <hr class="my-4">
-
-    <h2 class="text-3xl font-bold">
-
-        Total Risk :
-        {{ $country->riskScore->total_score }}
-
-    </h2>
-
-    <h3 class="text-xl mt-3">
-
-        Status :
-        {{ $country->riskScore->status }}
-
-    </h3>
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup('<b>' + name + '</b>')
+                .openPopup();
+        });
+    </script>
 
 @else
-
-    <p>Risk score belum tersedia.</p>
-
-@endif
-
-</div>
-
-<h2 class="text-2xl font-bold mt-8">
-    Latest News
-</h2>
-
-<div class="bg-white shadow rounded-xl p-6 mt-4">
-
-@if($country->news)
-
-    <h3 class="font-bold">
-        {{ $country->news->title }}
-    </h3>
-
-    <p>
-        Sentiment :
-        {{ $country->news->sentiment }}
-    </p>
-
-@else
-
-    <p>Tidak ada berita.</p>
-
-@endif
-
-</div>
-
-@else
-
-<div class="bg-yellow-100 border border-yellow-400 p-5 rounded">
-
-Belum ada data negara.
-
-</div>
-
+    <div class="bg-yellow-100 border border-yellow-400 p-5 rounded-xl text-yellow-800">
+        Belum ada data negara yang tersedia.
+    </div>
 @endif
 
 @endsection

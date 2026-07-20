@@ -14,8 +14,8 @@
         </li>
 
         <li>
-            <a href="{{ route('countries') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('countries') ? 'bg-blue-700' : '' }}">
+            <a href="{{ route('countries.index') }}"
+               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('countries.*') ? 'bg-blue-700' : '' }}">
                 Countries
             </a>
         </li>
@@ -28,43 +28,43 @@
         </li>
 
         <li>
-            <a href="{{ route('weather') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('weather') ? 'bg-blue-700' : '' }}">
+            <a href="{{ route('weather.index') }}"
+               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('weather.*') ? 'bg-blue-700' : '' }}">
                 Weather
             </a>
         </li>
 
         <li>
-            <a href="{{ route('exchange') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('exchange') ? 'bg-blue-700' : '' }}">
+            <a href="{{ route('exchange-rate.index') }}"
+               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('exchange-rate.*') ? 'bg-blue-700' : '' }}">
                 Exchange Rate
             </a>
         </li>
 
         <li>
-            <a href="{{ route('news') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('news') ? 'bg-blue-700' : '' }}">
+            <a href="{{ route('global-news.index') }}"
+               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('global-news.*') ? 'bg-blue-700' : '' }}">
                 Global News
             </a>
         </li>
 
         <li>
-            <a href="{{ route('port') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('port') ? 'bg-blue-700' : '' }}">
+            <a href="{{ route('port.index') }}"
+               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('port.*') ? 'bg-blue-700' : '' }}">
                 Port Map
             </a>
         </li>
 
         <li>
-            <a href="{{ route('risk') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('risk') ? 'bg-blue-700' : '' }}">
+            <a href="{{ route('risk.index') }}"
+               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('risk.*') ? 'bg-blue-700' : '' }}">
                 Risk Analysis
             </a>
         </li>
 
         <li>
-            <a href="{{ route('favorites') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('favorites') ? 'bg-blue-700' : '' }}">
+            <a href="{{ route('favorites.index') }}"
+               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('favorites.*') ? 'bg-blue-700' : '' }}">
                 Favorites
             </a>
         </li>

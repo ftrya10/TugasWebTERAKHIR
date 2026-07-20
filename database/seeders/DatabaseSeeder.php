@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             ExchangeRateSeeder::class,
             NewsSeeder::class,
             RiskScoreSeeder::class,
+             PortSeeder::class,
         ]);
     }
 }
