@@ -1,15 +1,23 @@
 #!/bin/sh
 set -e
 
+# Sanitize APP_URL (remove newlines, CR, tabs, spaces)
+if [ -n "$APP_URL" ]; then
+    APP_URL=$(echo "$APP_URL" | tr -d '\r\n\t ')
+    export APP_URL
+else
+    export APP_URL="https://globaltrade-insight.onrender.com"
+fi
+
 # Ensure database directory and database file exist for SQLite
 mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chmod -R 777 /var/www/html/database
 
-# Cache config & routes
-php artisan config:cache || true
-php artisan route:cache || true
-php artisan view:cache || true
+# Clear any cached configuration
+php artisan config:clear || true
+php artisan route:clear || true
+php artisan view:clear || true
 
 # Run migrations & seeders
 echo "Running migrations and seeders..."
