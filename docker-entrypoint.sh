@@ -9,10 +9,25 @@ else
     export APP_URL="https://globaltrade-insight.onrender.com"
 fi
 
+# Ensure .env file exists
+if [ ! -f /var/www/html/.env ]; then
+    if [ -f /var/www/html/.env.example ]; then
+        cp /var/www/html/.env.example /var/www/html/.env
+    else
+        touch /var/www/html/.env
+    fi
+fi
+
+# Generate APP_KEY if empty or not set
+if [ -z "$APP_KEY" ]; then
+    export APP_KEY="base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c="
+fi
+
 # Ensure database directory and database file exist for SQLite
 mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chmod -R 777 /var/www/html/database
+chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Clear any cached configuration
 php artisan config:clear || true
