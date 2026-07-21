@@ -21,13 +21,19 @@ mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chmod -R 777 /var/www/html/database
 
+# Ensure APP_KEY is set or generate one
+if [ -z "$APP_KEY" ]; then
+    echo "APP_KEY is not set. Generating application key..."
+    APP_KEY=$(php artisan key:generate --show --no-interaction)
+fi
+
 # Write .env file fresh from environment variables
 cat > /var/www/html/.env << EOF
 APP_NAME="GlobalTrade Insight"
 APP_ENV=${APP_ENV:-production}
-APP_KEY=${APP_KEY:-base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c=}
+APP_KEY=${APP_KEY}
 APP_DEBUG=${APP_DEBUG:-false}
-APP_URL=${APP_URL:-https://project-final-uas-globaltrade-insight.onrender.com}
+APP_URL=${APP_URL:-https://tugaswebterakhir.onrender.com}
 LOG_CHANNEL=stderr
 DB_CONNECTION=sqlite
 DB_DATABASE=/var/www/html/database/database.sqlite
@@ -37,21 +43,31 @@ QUEUE_CONNECTION=sync
 CACHE_STORE=file
 EOF
 
-echo "Generated .env file:"
-cat /var/www/html/.env
+echo "Generated .env file successfully."
 
-# Clear any cached configuration
+# Clear existing cache
 php artisan config:clear || true
 php artisan route:clear || true
 php artisan view:clear || true
 
-# Run migrations & seeders
+# Ensure storage link exists
+php artisan storage:link || true
+
+# Run database migrations & seeders
 echo "Running migrations..."
 php artisan migrate --force
 echo "Running seeders..."
 php artisan db:seed --force || true
 
+# Cache routes and views in production
+if [ "${APP_ENV}" = "production" ]; then
+    echo "Caching routes and views for production..."
+    php artisan route:cache || true
+    php artisan view:cache || true
+fi
+
 # Determine port
 PORT="${PORT:-8080}"
 echo "Starting Laravel application on port $PORT..."
 exec php artisan serve --host=0.0.0.0 --port="$PORT"
+
