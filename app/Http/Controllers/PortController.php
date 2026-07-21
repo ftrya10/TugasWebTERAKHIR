@@ -2,107 +2,307 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
+use App\Models\Port;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PortController extends Controller
 {
-
     /**
-     * Menampilkan halaman Port Map
+     * Menampilkan halaman Port Map.
      */
     public function index()
     {
-        return view('pages.port');
+        $countries = Country::with('ports')
+            ->whereNotNull('name')
+            ->where('name', '!=', '')
+            ->where('name', '!=', '-')
+            ->orderBy('name')
+            ->get();
+
+        return \Inertia\Inertia::render('Ports/Index', [
+            'countries' => $countries
+        ]);
     }
 
-
-
     /**
-     * Ambil data pelabuhan dari Overpass API
+     * Mengambil data pelabuhan dari Overpass API.
      */
-    public function getPortsByCountry($countryName)
-    {
+    public function getPortsByCountry(
+        $countryName
+    ) {
         try {
 
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDASI NEGARA
+            |--------------------------------------------------------------------------
+            */
 
-            $query = '[out:json][timeout:25];
+            $country = Country::where(
+                'name',
+                $countryName
+            )->first();
 
-            area["name"="' . $countryName . '"]->.searchArea;
+            if (!$country) {
 
-            (
-                node["harbour"](area.searchArea);
-                way["harbour"](area.searchArea);
-            );
+                return response()->json([
 
-            out center 10;';
+                    'status' =>
+                        'error',
 
+                    'message' =>
+                        'Negara tidak ditemukan'
 
+                ], 404);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | QUERY OVERPASS API
+            |--------------------------------------------------------------------------
+            */
+
+            $query = '
+                [out:json][timeout:25];
+
+                area["name"="' .
+                addslashes($countryName) .
+                '"]->.searchArea;
+
+                (
+                    node["harbour"](area.searchArea);
+                    way["harbour"](area.searchArea);
+                );
+
+                out center 10;
+            ';
+
+            /*
+            |--------------------------------------------------------------------------
+            | REQUEST API
+            |--------------------------------------------------------------------------
+            */
 
             $response = Http::withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/x-www-form-urlencoded'
-                ])
+
+                'Accept' =>
+                    'application/json',
+
+                'Content-Type' =>
+                    'application/x-www-form-urlencoded'
+
+            ])
                 ->timeout(60)
                 ->asForm()
                 ->post(
                     'https://overpass-api.de/api/interpreter',
                     [
-                        'data' => $query
+                        'data' =>
+                            $query
                     ]
                 );
 
+            /*
+            |--------------------------------------------------------------------------
+            | CEK RESPONSE
+            |--------------------------------------------------------------------------
+            */
 
+            if (!$response->successful()) {
 
-            if ($response->successful()) {
-
+                Log::error(
+                    'Overpass API Error: ' .
+                    $response->body()
+                );
 
                 return response()->json([
 
-                    'status'=>'success',
+                    'status' =>
+                        'error',
 
-                    'country'=>$countryName,
+                    'message' =>
+                        'Overpass API gagal',
 
-                    'ports'=>$response->json()['elements'] ?? []
+                    'code' =>
+                        $response->status()
 
-                ]);
-
+                ], 500);
             }
 
+            $elements =
+                $response->json()['elements']
+                ?? [];
 
+            /*
+            |--------------------------------------------------------------------------
+            | SIMPAN DATA PELABUHAN
+            |--------------------------------------------------------------------------
+            */
+
+            $savedPorts = [];
+
+            foreach ($elements as $element) {
+
+                $name =
+                    $element['tags']['name']
+                    ?? 'Unnamed Port';
+
+                /*
+                | Tentukan koordinat.
+                */
+
+                $latitude =
+                    $element['lat']
+                    ?? $element['center']['lat']
+                    ?? null;
+
+                $longitude =
+                    $element['lon']
+                    ?? $element['center']['lon']
+                    ?? null;
+
+                /*
+                | Lewati data tanpa koordinat.
+                */
+
+                if (
+                    $latitude === null ||
+                    $longitude === null
+                ) {
+                    continue;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | SIMPAN / UPDATE PELABUHAN
+                |--------------------------------------------------------------------------
+                */
+
+                $port =
+                    Port::updateOrCreate(
+
+                        [
+                            'country_id' =>
+                                $country->id,
+
+                            'name' =>
+                                $name
+                        ],
+
+                        [
+
+                            'city' =>
+                                $element['tags']['addr:city']
+                                ?? null,
+
+                            'latitude' =>
+                                $latitude,
+
+                            'longitude' =>
+                                $longitude,
+
+                            /*
+                            | Status awal.
+                            | Nanti dapat diubah melalui
+                            | Admin Port Dataset.
+                            */
+
+                            'status' =>
+                                'active',
+
+                            'description' =>
+                                $element['tags']['description']
+                                ?? null
+                        ]
+                    );
+
+                $savedPorts[] =
+                    $port;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | RETURN RESPONSE
+            |--------------------------------------------------------------------------
+            */
 
             return response()->json([
 
-                'status'=>'error',
+                'status' =>
+                    'success',
 
-                'message'=>'Overpass API gagal',
+                'country' =>
+                    $countryName,
 
-                'code'=>$response->status(),
+                'total' =>
+                    count($savedPorts),
 
-                'response'=>$response->body()
+                'ports' =>
+                    $savedPorts
 
-            ],500);
+            ]);
 
-
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
 
             Log::error(
-                'Port API Error: '.$e->getMessage()
+                'Port API Error: ' .
+                $e->getMessage()
             );
-
 
             return response()->json([
 
-                'status'=>'error',
+                'status' =>
+                    'error',
 
-                'message'=>$e->getMessage()
+                'message' =>
+                    'Gagal mengambil data pelabuhan'
 
-            ],500);
-
+            ], 500);
         }
     }
 
+    /**
+     * Mengubah status pelabuhan.
+     *
+     * Status yang diperbolehkan:
+     * active
+     * congested
+     * delayed
+     * critical
+     */
+    public function updateStatus(
+        Request $request,
+        Port $port
+    ) {
+        $validated =
+            $request->validate([
+
+                'status' => [
+                    'required',
+                    'in:active,congested,delayed,critical'
+                ]
+
+            ]);
+
+        $port->update([
+            'status' =>
+                $validated['status']
+        ]);
+
+        return response()->json([
+
+            'status' =>
+                'success',
+
+            'message' =>
+                'Status pelabuhan berhasil diperbarui',
+
+            'port' =>
+                $port
+
+        ]);
+    }
 }

@@ -1,74 +1,38 @@
-<div class="w-64 bg-blue-900 text-white min-h-screen">
-
-    <div class="text-2xl font-bold p-6 border-b border-blue-700">
-        GlobalTrade
-    </div>
-
-    <ul class="mt-5">
-
-        <li>
-            <a href="{{ route('dashboard') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('dashboard') ? 'bg-blue-700' : '' }}">
-                Dashboard
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('countries.index') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('countries.*') ? 'bg-blue-700' : '' }}">
-                Countries
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('trade') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('trade') ? 'bg-blue-700' : '' }}">
-                Trade Analysis
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('weather.index') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('weather.*') ? 'bg-blue-700' : '' }}">
-                Weather
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('exchange-rate.index') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('exchange-rate.*') ? 'bg-blue-700' : '' }}">
-                Exchange Rate
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('global-news.index') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('global-news.*') ? 'bg-blue-700' : '' }}">
-                Global News
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('port.index') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('port.*') ? 'bg-blue-700' : '' }}">
-                Port Map
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('risk.index') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('risk.*') ? 'bg-blue-700' : '' }}">
-                Risk Analysis
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('favorites.index') }}"
-               class="block px-6 py-3 hover:bg-blue-700 {{ request()->routeIs('favorites.*') ? 'bg-blue-700' : '' }}">
-                Favorites
-            </a>
-        </li>
-
-    </ul>
-
-</div>
+<aside class="w-64 bg-gray-900 text-white min-h-screen p-4 flex-shrink-0">
+    <div class="text-xl font-bold mb-8">🌍 GlobalTrade</div>
+    
+    <nav class="space-y-1">
+        {{-- Admin --}}
+        <div class="text-xs text-gray-500 uppercase tracking-wider mt-4 mb-2">ADMIN</div>
+        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition {{ request()->routeIs('admin.dashboard') ? 'bg-gray-800' : '' }}">
+            ⚙️ Admin Dashboard
+        </a>
+        <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition pl-8 {{ request()->routeIs('admin.users') ? 'bg-gray-800' : '' }}">
+            👥 Manage Users
+        </a>
+        <a href="{{ route('admin.ports') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition pl-8 {{ request()->routeIs('admin.ports') ? 'bg-gray-800' : '' }}">
+            ⚓ Port Dataset
+        </a>
+        <a href="{{ route('admin.articles') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition pl-8 {{ request()->routeIs('admin.articles') ? 'bg-gray-800' : '' }}">
+            📄 Articles
+        </a>
+        
+        {{-- Main --}}
+        <div class="text-xs text-gray-500 uppercase tracking-wider mt-4 mb-2">MAIN</div>
+        <a href="{{ route('countries.index') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition {{ request()->routeIs('countries.*') ? 'bg-gray-800' : '' }}">
+            🌍 Countries
+        </a>
+        <a href="{{ route('ports.index') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition {{ request()->routeIs('ports.*') ? 'bg-gray-800' : '' }}">
+            ⚓ Ports
+        </a>
+        <a href="{{ route('weather.index') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition {{ request()->routeIs('weather.*') ? 'bg-gray-800' : '' }}">
+            🌦️ Weather
+        </a>
+        <a href="{{ route('news.index') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition {{ request()->routeIs('news.*') ? 'bg-gray-800' : '' }}">
+            📰 News
+        </a>
+        <a href="{{ route('risk.index') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition {{ request()->routeIs('risk.*') ? 'bg-gray-800' : '' }}">
+            ⚠️ Risk Analysis
+        </a>
+    </nav>
+</aside>
