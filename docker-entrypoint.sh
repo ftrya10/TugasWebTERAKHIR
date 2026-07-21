@@ -18,10 +18,13 @@ if [ ! -f /var/www/html/.env ]; then
     fi
 fi
 
-# Generate APP_KEY if empty or not set
-if [ -z "$APP_KEY" ]; then
-    export APP_KEY="base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c="
+# Generate APP_KEY into .env if not present
+if ! grep -q "APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
+    php artisan key:generate --force || true
 fi
+
+# Ensure APP_KEY environment variable is exported
+export APP_KEY="${APP_KEY:-base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c=}"
 
 # Ensure database directory and database file exist for SQLite
 mkdir -p /var/www/html/database
