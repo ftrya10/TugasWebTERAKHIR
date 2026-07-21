@@ -22,21 +22,24 @@ export default function Index({ auth, countries, countryA, countryB }) {
         return new Intl.NumberFormat().format(num);
     };
 
+    const countryAName = countryA?.name || 'Country A';
+    const countryBName = countryB?.name === countryA?.name ? `${countryB?.name || 'Country B'} (2)` : (countryB?.name || 'Country B');
+
     const comparisonData = [
         {
             name: 'GDP (USD)',
-            [countryA?.name]: parseFloat(countryA?.gdp) || 0,
-            [countryB?.name]: parseFloat(countryB?.gdp) || 0,
+            [countryAName]: parseFloat(countryA?.gdp) || 0,
+            [countryBName]: parseFloat(countryB?.gdp) || 0,
         },
         {
             name: 'Inflation (%)',
-            [countryA?.name]: parseFloat(countryA?.inflation) || 0,
-            [countryB?.name]: parseFloat(countryB?.inflation) || 0,
+            [countryAName]: parseFloat(countryA?.inflation) || 0,
+            [countryBName]: parseFloat(countryB?.inflation) || 0,
         },
         {
             name: 'Risk Score',
-            [countryA?.name]: parseFloat(countryA?.riskScore?.total_score) || 0,
-            [countryB?.name]: parseFloat(countryB?.riskScore?.total_score) || 0,
+            [countryAName]: parseFloat(countryA?.riskScore?.total_score) || 0,
+            [countryBName]: parseFloat(countryB?.riskScore?.total_score) || 0,
         }
     ];
 
@@ -133,13 +136,14 @@ export default function Index({ auth, countries, countryA, countryB }) {
                                             contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
                                         />
                                         <Legend wrapperStyle={{paddingTop: '20px'}} />
-                                        <Bar dataKey={countryA.name} fill="#6366f1" radius={[4, 4, 0, 0]} />
-                                        <Bar dataKey={countryB.name} fill="#14b8a6" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey={countryAName} fill="#6366f1" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey={countryBName} fill="#14b8a6" radius={[4, 4, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
                     )}
+
 
                 </div>
             </div>

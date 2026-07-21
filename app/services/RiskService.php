@@ -14,6 +14,11 @@ class RiskService
      */
     public static function calculateTotal($weatherScore, $inflationScore, $exchangeScore, $newsScore)
     {
+        $weatherScore = (float) ($weatherScore ?? 0);
+        $inflationScore = (float) ($inflationScore ?? 0);
+        $exchangeScore = (float) ($exchangeScore ?? 0);
+        $newsScore = (float) ($newsScore ?? 0);
+
         $total = ($weatherScore * 0.30) + 
                  ($inflationScore * 0.20) + 
                  ($exchangeScore * 0.10) + 
@@ -27,6 +32,7 @@ class RiskService
      */
     public static function getStatus($totalScore)
     {
+        $totalScore = (float) ($totalScore ?? 0);
         if ($totalScore < 33.33) {
             return 'Low Risk';
         } elseif ($totalScore < 66.66) {
@@ -35,4 +41,5 @@ class RiskService
             return 'High Risk';
         }
     }
+
 }
