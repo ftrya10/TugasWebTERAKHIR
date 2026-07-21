@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: globaltrade-insight
+    name: tugaswebterakhir
     env: docker
     plan: free
     region: singapore
@@ -12,13 +12,12 @@ services:
         value: "false"
       - key: APP_KEY
         generateValue: true
-      - key: APP_URL
-        value: https://globaltrade-insight.onrender.com
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
         value: /var/www/html/database/database.sqlite
       - key: SESSION_DRIVER
-        value: database
+        value: file
       - key: QUEUE_CONNECTION
         value: sync
+
