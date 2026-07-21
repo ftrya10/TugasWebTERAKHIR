@@ -11,7 +11,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        generateValue: true
+        value: base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c=
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
@@ -20,4 +20,5 @@ services:
         value: file
       - key: QUEUE_CONNECTION
         value: sync
+
 

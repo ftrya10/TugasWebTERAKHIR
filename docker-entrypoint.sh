@@ -20,12 +20,18 @@ chmod -R 777 /var/www/html/bootstrap/cache
 mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chmod -R 777 /var/www/html/database
+chmod 666 /var/www/html/database/database.sqlite
 
-# Ensure APP_KEY is set or generate one
-if [ -z "$APP_KEY" ]; then
-    echo "APP_KEY is not set. Generating application key..."
-    APP_KEY=$(php artisan key:generate --show --no-interaction)
-fi
+# Ensure APP_KEY starts with base64:
+case "$APP_KEY" in
+    base64:*)
+        echo "Valid base64 APP_KEY detected."
+        ;;
+    *)
+        echo "APP_KEY missing or invalid format. Generating fresh base64 key..."
+        APP_KEY=$(php artisan key:generate --show --no-interaction)
+        ;;
+esac
 
 # Write .env file fresh from environment variables
 cat > /var/www/html/.env << EOF
@@ -59,15 +65,9 @@ php artisan migrate --force
 echo "Running seeders..."
 php artisan db:seed --force || true
 
-# Cache routes and views in production
-if [ "${APP_ENV}" = "production" ]; then
-    echo "Caching routes and views for production..."
-    php artisan route:cache || true
-    php artisan view:cache || true
-fi
-
 # Determine port
 PORT="${PORT:-8080}"
 echo "Starting Laravel application on port $PORT..."
 exec php artisan serve --host=0.0.0.0 --port="$PORT"
+
 
