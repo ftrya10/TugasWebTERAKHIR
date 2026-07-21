@@ -38,8 +38,9 @@ cat > /var/www/html/.env << EOF
 APP_NAME="GlobalTrade Insight"
 APP_ENV=${APP_ENV:-production}
 APP_KEY=${APP_KEY}
-APP_DEBUG=true
+APP_DEBUG=${APP_DEBUG:-false}
 APP_URL=${APP_URL:-https://tugaswebterakhir.onrender.com}
+
 
 LOG_CHANNEL=stderr
 DB_CONNECTION=sqlite
