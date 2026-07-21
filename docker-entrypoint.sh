@@ -9,7 +9,7 @@ else
     export APP_URL="https://globaltrade-insight.onrender.com"
 fi
 
-# Ensure .env file exists
+# Ensure .env file exists and contains a valid APP_KEY
 if [ ! -f /var/www/html/.env ]; then
     if [ -f /var/www/html/.env.example ]; then
         cp /var/www/html/.env.example /var/www/html/.env
@@ -18,13 +18,15 @@ if [ ! -f /var/www/html/.env ]; then
     fi
 fi
 
-# Generate APP_KEY into .env if not present
-if ! grep -q "APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
-    php artisan key:generate --force || true
+# Ensure APP_KEY exists in .env file
+if ! grep -q "APP_KEY=" /var/www/html/.env || grep -q "APP_KEY=$" /var/www/html/.env; then
+    echo "APP_KEY=base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c=" >> /var/www/html/.env
 fi
 
-# Ensure APP_KEY environment variable is exported
-export APP_KEY="${APP_KEY:-base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c=}"
+# Export APP_KEY to environment if empty
+if [ -z "$APP_KEY" ]; then
+    export APP_KEY="base64:7f9Q8+uV/8N0g1KxL9mX2sQ3vR4wT5yU6zI7oP8aB9c="
+fi
 
 # Ensure database directory and database file exist for SQLite
 mkdir -p /var/www/html/database
