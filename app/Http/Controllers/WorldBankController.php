@@ -4,73 +4,58 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WorldBankController extends Controller
 {
-
     public function sync()
     {
-
         $countries = Country::all();
 
 
-        foreach($countries as $country)
-        {
+        foreach ($countries as $country) {
+
+            try {
 
 
-            // GDP API World Bank
-            $gdpResponse = Http::get(
-                "https://api.worldbank.org/v2/country/{$country->code}/indicator/NY.GDP.MKTP.CD?format=json"
-            );
+                $gdp = $this->getWorldBankData(
+                    $country->code,
+                    'NY.GDP.MKTP.CD'
+                );
 
 
-            if(
-                $gdpResponse->successful() &&
-                isset($gdpResponse->json()[1][0]['value'])
-            ){
-
-                $gdp = $gdpResponse->json()[1][0]['value'];
-
-            }else{
-
-                $gdp = null;
-
-            }
+                $inflation = $this->getWorldBankData(
+                    $country->code,
+                    'FP.CPI.TOTL.ZG'
+                );
 
 
 
-            // Inflation API World Bank
-            $inflationResponse = Http::get(
-                "https://api.worldbank.org/v2/country/{$country->code}/indicator/FP.CPI.TOTL.ZG?format=json"
-            );
+                $country->update([
+
+                    'gdp' => $gdp,
+
+                    'inflation' => $inflation
+
+                ]);
 
 
-            if(
-                $inflationResponse->successful() &&
-                isset($inflationResponse->json()[1][0]['value'])
-            ){
 
-                $inflation =
-                $inflationResponse->json()[1][0]['value'];
+            } catch (\Exception $e) {
 
-            }else{
 
-                $inflation = null;
+                Log::error(
+                    "WorldBank gagal {$country->name}: "
+                    .$e->getMessage()
+                );
+
+
+                continue;
 
             }
-
-
-
-            $country->update([
-
-                'gdp' => $gdp,
-
-                'inflation' => $inflation
-
-            ]);
-
 
         }
+
 
 
         return back()->with(
@@ -78,7 +63,60 @@ class WorldBankController extends Controller
             'GDP dan Inflation berhasil diperbarui'
         );
 
-
     }
 
+
+
+    private function getWorldBankData($countryCode, $indicator)
+    {
+
+        $response = Http::retry(3, 1000)
+            ->timeout(15)
+            ->get(
+                "https://api.worldbank.org/v2/country/{$countryCode}/indicator/{$indicator}",
+                [
+                    'format' => 'json',
+                    'per_page' => 10
+                ]
+            );
+
+
+        if (!$response->successful()) {
+
+            return null;
+
+        }
+
+
+        $data = $response->json();
+
+
+
+        if (!isset($data[1])) {
+
+            return null;
+
+        }
+
+
+
+        foreach ($data[1] as $row) {
+
+
+            if (
+                isset($row['value']) &&
+                $row['value'] !== null
+            ) {
+
+                return $row['value'];
+
+            }
+
+        }
+
+
+
+        return null;
+
+    }
 }

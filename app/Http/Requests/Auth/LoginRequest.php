@@ -13,6 +13,18 @@ use Illuminate\Validation\ValidationException;
 class LoginRequest extends FormRequest
 {
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('email')) {
+            $this->merge([
+                'email' => strtolower($this->email),
+            ]);
+        }
+    }
+
+    /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool

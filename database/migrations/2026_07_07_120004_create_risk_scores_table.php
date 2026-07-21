@@ -12,25 +12,77 @@ return new class extends Migration
 
             $table->id();
 
+            /*
+            |--------------------------------------------------------------------------
+            | RELASI COUNTRY
+            |--------------------------------------------------------------------------
+            */
+
             $table->foreignId('country_id')
                 ->constrained('countries')
-                ->cascadeOnDelete();
+                ->cascadeOnDelete()
+                ->unique();
 
-            // Nilai setiap indikator
-            $table->integer('weather_score')->default(0);
-            $table->integer('inflation_score')->default(0);
-            $table->integer('exchange_score')->default(0);
-            $table->integer('news_score')->default(0);
 
-            // Total nilai
-            $table->integer('total_score')->default(0);
+            /*
+            |--------------------------------------------------------------------------
+            | RISK COMPONENTS
+            |--------------------------------------------------------------------------
+            |
+            | Semua skor menggunakan skala 0 - 100
+            |
+            */
 
-            // Status risiko
+            $table->decimal('weather_score', 5, 2)
+                ->default(0);
+
+            $table->decimal('inflation_score', 5, 2)
+                ->default(0);
+
+            $table->decimal('exchange_score', 5, 2)
+                ->default(0);
+
+            $table->decimal('news_score', 5, 2)
+                ->default(0);
+
+            $table->decimal('port_score', 5, 2)
+                ->default(0);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | FINAL RISK SCORE
+            |--------------------------------------------------------------------------
+            */
+
+            $table->decimal('total_score', 5, 2)
+                ->default(0);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | RISK STATUS
+            |--------------------------------------------------------------------------
+            |
+            | Status disimpan dalam format lowercase agar konsisten
+            | dengan RiskController dan Risk API.
+            |
+            */
+
             $table->enum('status', [
-                'Low Risk',
-                'Medium Risk',
-                'High Risk'
-            ])->default('Low Risk');
+                'low',
+                'medium',
+                'high',
+                'critical',
+            ])
+            ->default('low');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | TIMESTAMPS
+            |--------------------------------------------------------------------------
+            */
 
             $table->timestamps();
 

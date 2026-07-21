@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'code',
@@ -19,54 +22,36 @@ class Country extends Model
         'longitude',
     ];
 
+    protected $casts = [
+        'gdp' => 'decimal:2',
+        'inflation' => 'decimal:2',
+        'population' => 'integer',
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
+    ];
 
     public function weather()
     {
         return $this->hasOne(Weather::class);
     }
 
-
     public function exchangeRate()
     {
         return $this->hasOne(ExchangeRate::class);
     }
-
-
-    public function news()
-    {
-        return $this->hasOne(News::class);
-    }
-
 
     public function riskScore()
     {
         return $this->hasOne(RiskScore::class);
     }
 
-
-    public function favorites()
+    public function news()
     {
-        return $this->hasMany(Favorite::class);
+        return $this->hasMany(News::class);
     }
 
-
-    /**
-     * Relasi negara dengan pelabuhan
-     */
     public function ports()
     {
         return $this->hasMany(Port::class);
-    }
-
-
-    public function newsCaches()
-    {
-        return $this->hasMany(NewsCache::class);
-    }
-
-
-    public function watchlists()
-    {
-        return $this->hasMany(Watchlist::class);
     }
 }

@@ -1,30 +1,43 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>GlobalTrade Insight</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    @vite(['resources/css/app.css','resources/js/app.js'])
+</head>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+<body class="min-h-screen overflow-y-auto bg-slate-950">
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
-        </div>
-    </body>
+    <!-- Background -->
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+
+        <!-- Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900"></div>
+
+        <!-- Glow -->
+        <div class="absolute -top-32 -left-24 w-80 h-80 rounded-full bg-cyan-500/20 blur-[120px]"></div>
+
+        <div class="absolute bottom-0 right-0 w-[450px] h-[450px] rounded-full bg-indigo-500/20 blur-[150px]"></div>
+
+        <div class="absolute top-1/2 left-1/2 w-[350px] h-[350px] rounded-full bg-sky-500/10 blur-[120px] -translate-x-1/2 -translate-y-1/2"></div>
+
+        <!-- Decorative circles -->
+        <div class="absolute top-20 right-24 w-2 h-2 bg-cyan-400 rounded-full opacity-70"></div>
+        <div class="absolute bottom-24 left-20 w-3 h-3 bg-blue-400 rounded-full opacity-60"></div>
+        <div class="absolute top-1/3 left-1/4 w-1 h-1 bg-white rounded-full opacity-60"></div>
+
+    </div>
+
+    <!-- Login Content -->
+    <main class="relative flex items-center justify-center min-h-screen py-12 px-6">
+
+        {{ $slot }}
+
+    </main>
+
+</body>
 </html>

@@ -2,63 +2,51 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Country;
+use App\Models\ExchangeRate;
+use App\Models\News;
 use App\Models\RiskScore;
+use App\Models\Weather;
+use Illuminate\Database\Seeder;
 
 class RiskScoreSeeder extends Seeder
 {
     public function run(): void
     {
-        RiskScore::insert([
+        foreach (Country::all() as $country) {
 
-            [
-                'country_id' => 1,
-                'weather_score' => 5,
-                'inflation_score' => 2,
-                'exchange_score' => 4,
-                'news_score' => 3,
-                'total_score' => 14,
-                'status' => 'Low Risk',
+            $weather = Weather::where('country_id', $country->id)->first();
+            $exchange = ExchangeRate::where('country_id', $country->id)->first();
+            $news = News::where('country_id', $country->id)->first();
+
+            $weatherScore = $weather?->weather_score ?? 0;
+            $exchangeScore = $exchange?->exchange_score ?? 0;
+            $newsScore = $news?->news_score ?? 0;
+
+            // Karena inflation masih 0 di CountrySeeder
+            $inflationScore = rand(1, 5);
+
+            $totalScore = $weatherScore + $exchangeScore + $newsScore + $inflationScore;
+
+            if ($totalScore <= 15) {
+                $status = 'low';
+            } elseif ($totalScore <= 25) {
+                $status = 'medium';
+            } else {
+                $status = 'high';
+            }
+
+            RiskScore::create([
+                'country_id' => $country->id,
+                'weather_score' => $weatherScore,
+                'inflation_score' => $inflationScore,
+                'exchange_score' => $exchangeScore,
+                'news_score' => $newsScore,
+                'total_score' => $totalScore,
+                'status' => $status,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-
-            [
-                'country_id' => 2,
-                'weather_score' => 8,
-                'inflation_score' => 1,
-                'exchange_score' => 8,
-                'news_score' => 7,
-                'total_score' => 24,
-                'status' => 'Medium Risk',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'country_id' => 3,
-                'weather_score' => 10,
-                'inflation_score' => 3,
-                'exchange_score' => 10,
-                'news_score' => 10,
-                'total_score' => 33,
-                'status' => 'High Risk',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'country_id' => 4,
-                'weather_score' => 4,
-                'inflation_score' => 2,
-                'exchange_score' => 5,
-                'news_score' => 2,
-                'total_score' => 13,
-                'status' => 'Low Risk',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-        ]);
+            ]);
+        }
     }
 }

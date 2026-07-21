@@ -47,6 +47,10 @@ class CompareController extends Controller
             $countryB->riskScore->status = RiskService::getStatus($countryB->riskScore->total_score);
         }
 
-        return view('pages.compare', compact('countries', 'countryA', 'countryB'));
+        return \Inertia\Inertia::render('Compare/Index', [
+            'countries' => $countries,
+            'countryA' => $countryA,
+            'countryB' => $countryB
+        ]);
     }
 }
