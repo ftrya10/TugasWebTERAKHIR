@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/currency', [\App\Http\Controllers\CurrencyController::class, 'index'])->name('currency.index');
     
+    Route::get('/risk-prediction', [\App\Http\Controllers\RiskPredictionController::class, 'index'])->name('risk.index');
+    
     Route::get('/favorites', [\App\Http\Controllers\FavoriteController::class, 'index'])->name('favorites.index');
     Route::post('/favorites/toggle', [\App\Http\Controllers\FavoriteController::class, 'toggle'])->name('favorites.toggle');
 

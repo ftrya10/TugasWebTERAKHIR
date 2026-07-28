@@ -16,6 +16,7 @@ export default function AuthenticatedLayout({ header, children }) {
         { href: route('countries.index'), label: '🌍 Countries', match: 'countries.*' },
         { href: route('currency.index'), label: '💱 Currency', match: 'currency.*' },
         { href: route('ports.index'), label: '⚓ Ports', match: 'ports.*' },
+        { href: route('risk.index'), label: '📈 Risk Prediction', match: 'risk.*' },
         { href: route('compare'), label: '📊 Compare', match: 'compare' },
         { href: route('favorites.index'), label: '⭐ Watchlist', match: 'favorites.*' },
         { href: route('articles.index'), label: '📰 Articles', match: 'articles.*' },

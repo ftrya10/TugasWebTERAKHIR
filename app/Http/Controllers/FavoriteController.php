@@ -45,10 +45,10 @@ class FavoriteController extends Controller
 
         if ($existing) {
             $existing->delete();
-            return response()->json(['status' => 'removed', 'country_id' => $countryId]);
         } else {
             Watchlist::create(['user_id' => $userId, 'country_id' => $countryId]);
-            return response()->json(['status' => 'added', 'country_id' => $countryId]);
         }
+
+        return redirect()->back();
     }
 }

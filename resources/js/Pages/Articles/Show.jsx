@@ -17,27 +17,28 @@ export default function Show({ auth, article }) {
         return map[category] || 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300';
     };
 
-    // Simple markdown-like rendering for content
+    // Clean and concise factual rendering
     const renderContent = (text) => {
-        return text.split('\n').map((line, i) => {
-            // Bold
-            line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Code blocks
-            line = line.replace(/```(.*?)```/g, '<code class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-sm">$1</code>');
-            // Inline code
-            line = line.replace(/`(.*?)`/g, '<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
-
-            if (line.startsWith('- ')) {
-                return <li key={i} className="ml-4 list-disc text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: line.substring(2) }} />;
-            }
-            if (/^\d+\.\s/.test(line)) {
-                return <li key={i} className="ml-4 list-decimal text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: line.replace(/^\d+\.\s/, '') }} />;
-            }
-            if (line.trim() === '') {
-                return <br key={i} />;
-            }
-            return <p key={i} className="text-slate-700 dark:text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: line }} />;
-        });
+        return (
+            <div className="space-y-3">
+                {text.split('\n').filter(Boolean).map((line, i) => {
+                    const cleanLine = line.trim();
+                    if (cleanLine.startsWith('•') || cleanLine.startsWith('-')) {
+                        return (
+                            <div key={i} className="flex items-start gap-2 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700 font-medium">
+                                <span className="text-indigo-500 font-bold">•</span>
+                                <span>{cleanLine.replace(/^[•-]\s*/, '')}</span>
+                            </div>
+                        );
+                    }
+                    return (
+                        <p key={i} className="text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+                            {cleanLine}
+                        </p>
+                    );
+                })}
+            </div>
+        );
     };
 
     return (

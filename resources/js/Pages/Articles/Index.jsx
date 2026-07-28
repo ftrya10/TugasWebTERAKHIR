@@ -65,9 +65,11 @@ export default function Index({ auth, articles }) {
                                         </h3>
 
                                         {/* Content Preview */}
-                                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 flex-1 mb-4">
-                                            {article.content.replace(/[#*`\n]/g, ' ').substring(0, 200)}...
-                                        </p>
+                                        <div className="text-sm text-slate-600 dark:text-slate-400 line-clamp-4 flex-1 mb-4 space-y-1">
+                                            {article.content.split('\n').filter(Boolean).slice(0, 3).map((line, idx) => (
+                                                <div key={idx} className="truncate">{line}</div>
+                                            ))}
+                                        </div>
 
                                         {/* Footer */}
                                         <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">

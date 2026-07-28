@@ -1,8 +1,16 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 import { Globe, Search, ArrowRight } from 'lucide-react';
 
 export default function Index({ auth, countries }) {
+    const [search, setSearch] = useState('');
+
+    const filteredCountries = countries.filter(country => 
+        country.name?.toLowerCase().includes(search.toLowerCase().trim()) ||
+        country.region?.toLowerCase().includes(search.toLowerCase().trim())
+    );
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -13,47 +21,59 @@ export default function Index({ auth, countries }) {
             <div className="py-12 bg-slate-50 dark:bg-slate-900 min-h-screen">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
                     <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm">
-                        <div className="flex justify-between items-center mb-6">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                             <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                 <Globe className="w-5 h-5 text-indigo-500" />
-                                Monitored Countries
+                                Monitored Countries ({filteredCountries.length})
                             </h3>
-                            <div className="relative">
+                            <div className="relative w-full sm:w-64">
                                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                <input type="text" placeholder="Search country..." className="pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm bg-slate-50 dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                <input 
+                                    type="text" 
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Search country..." 
+                                    className="w-full pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm bg-slate-50 dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                                />
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {countries.map(country => (
-                                <Link key={country.id} href={route('countries.show', country.id)} className="block group">
-                                    <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md transition-all">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="flex items-center gap-3">
-                                                <img src={country.flag} alt={country.name} className="w-10 h-7 rounded object-cover shadow-sm" />
+                        {filteredCountries.length === 0 ? (
+                            <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+                                <p className="text-lg font-medium">Tidak ada negara yang cocok dengan "{search}"</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {filteredCountries.map(country => (
+                                    <Link key={country.id} href={route('countries.show', country.id)} className="block group">
+                                        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md transition-all">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center gap-3">
+                                                    <img src={country.flag} alt={country.name} className="w-10 h-7 rounded object-cover shadow-sm" />
+                                                    <div>
+                                                        <h4 className="font-semibold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{country.name}</h4>
+                                                        <p className="text-xs text-slate-500">{country.region}</p>
+                                                    </div>
+                                                </div>
+                                                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors -translate-x-2 group-hover:translate-x-0" />
+                                            </div>
+                                            <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
                                                 <div>
-                                                    <h4 className="font-semibold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{country.name}</h4>
-                                                    <p className="text-xs text-slate-500">{country.region}</p>
+                                                    <span className="font-medium text-slate-800 dark:text-slate-200">{country.inflation}%</span>
+                                                    <span className="text-xs ml-1">Inflation</span>
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium text-slate-800 dark:text-slate-200">
+                                                        {country.riskScore?.status || 'Unknown'}
+                                                    </span>
+                                                    <span className="text-xs ml-1">Risk</span>
                                                 </div>
                                             </div>
-                                            <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors -translate-x-2 group-hover:translate-x-0" />
                                         </div>
-                                        <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
-                                            <div>
-                                                <span className="font-medium text-slate-800 dark:text-slate-200">{country.inflation}%</span>
-                                                <span className="text-xs ml-1">Inflation</span>
-                                            </div>
-                                            <div>
-                                                <span className="font-medium text-slate-800 dark:text-slate-200">
-                                                    {country.riskScore?.status || 'Unknown'}
-                                                </span>
-                                                <span className="text-xs ml-1">Risk</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
