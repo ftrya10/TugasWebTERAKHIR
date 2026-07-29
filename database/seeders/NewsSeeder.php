@@ -10,6 +10,8 @@ class NewsSeeder extends Seeder
 {
     public function run(): void
     {
+        News::query()->delete();
+
         $newsByCountry = [
             'ID' => [
                 [

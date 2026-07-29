@@ -61,11 +61,9 @@ php artisan view:clear || true
 # Ensure storage link exists
 php artisan storage:link || true
 
-# Run database migrations & seeders
-echo "Running migrations..."
-php artisan migrate --force
-echo "Running seeders..."
-php artisan db:seed --force || true
+# Run fresh database migrations & seeders to wipe stale data and load real news/scores
+echo "Running fresh migrations & seeders..."
+php artisan migrate:fresh --force --seed
 
 # Determine port
 PORT="${PORT:-8080}"

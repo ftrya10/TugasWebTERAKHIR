@@ -50,20 +50,18 @@ class DashboardController extends Controller
 
             $totalCalculated = \App\Services\RiskService::calculateTotal($weatherScore, $inflationScore, $exchangeScore, $newsScore);
 
-            if (!$country->riskScore || (float) $country->riskScore->total_score == 0) {
-                $riskObj = \App\Models\RiskScore::updateOrCreate(
-                    ['country_id' => $country->id],
-                    [
-                        'weather_score' => $weatherScore,
-                        'inflation_score' => $inflationScore,
-                        'exchange_score' => $exchangeScore,
-                        'news_score' => $newsScore,
-                        'total_score' => $totalCalculated,
-                        'status' => strtolower(explode(' ', \App\Services\RiskService::getStatus($totalCalculated))[0]),
-                    ]
-                );
-                $country->setRelation('riskScore', $riskObj);
-            }
+            $riskObj = \App\Models\RiskScore::updateOrCreate(
+                ['country_id' => $country->id],
+                [
+                    'weather_score' => $weatherScore,
+                    'inflation_score' => $inflationScore,
+                    'exchange_score' => $exchangeScore,
+                    'news_score' => $newsScore,
+                    'total_score' => $totalCalculated,
+                    'status' => strtolower(explode(' ', \App\Services\RiskService::getStatus($totalCalculated))[0]),
+                ]
+            );
+            $country->setRelation('riskScore', $riskObj);
         }
 
         $recentNews = News::with('country')

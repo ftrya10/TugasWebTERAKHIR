@@ -13,6 +13,8 @@ class RiskScoreSeeder extends Seeder
 {
     public function run(): void
     {
+        RiskScore::query()->delete();
+
         foreach (Country::all() as $country) {
             $weather = Weather::where('country_id', $country->id)->first();
             $exchange = ExchangeRate::where('country_id', $country->id)->first();

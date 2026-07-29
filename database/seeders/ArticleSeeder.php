@@ -10,6 +10,8 @@ class ArticleSeeder extends Seeder
 {
     public function run(): void
     {
+        Article::query()->delete();
+
         $admin = User::where('email', 'admin@gmail.com')->first();
         $userId = $admin ? $admin->id : 1;
 
