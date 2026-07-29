@@ -14,39 +14,48 @@ class RiskScoreSeeder extends Seeder
     public function run(): void
     {
         foreach (Country::all() as $country) {
-
             $weather = Weather::where('country_id', $country->id)->first();
             $exchange = ExchangeRate::where('country_id', $country->id)->first();
             $news = News::where('country_id', $country->id)->first();
 
-            $weatherScore = $weather?->weather_score ?? 0;
-            $exchangeScore = $exchange?->exchange_score ?? 0;
-            $newsScore = $news?->news_score ?? 0;
+            $rawWeather = (float) ($weather?->weather_score ?? 3);
+            $weatherScore = $rawWeather <= 10 ? $rawWeather * 10 : $rawWeather;
 
-            // Karena inflation masih 0 di CountrySeeder
-            $inflationScore = rand(1, 5);
+            $inflation = (float) ($country->inflation ?? 0);
+            $inflationScore = min(100, max(0, $inflation * 12));
 
-            $totalScore = $weatherScore + $exchangeScore + $newsScore + $inflationScore;
+            $rawExchange = (float) ($exchange?->exchange_score ?? 3);
+            $exchangeScore = $rawExchange <= 10 ? $rawExchange * 10 : $rawExchange;
 
-            if ($totalScore <= 15) {
-                $status = 'low';
-            } elseif ($totalScore <= 25) {
-                $status = 'medium';
+            if ($news) {
+                if ($news->sentiment === 'Negative') {
+                    $newsScore = 80;
+                } elseif ($news->sentiment === 'Neutral') {
+                    $newsScore = 45;
+                } else {
+                    $newsScore = 15;
+                }
             } else {
-                $status = 'high';
+                $newsScore = 30;
             }
 
-            RiskScore::create([
-                'country_id' => $country->id,
-                'weather_score' => $weatherScore,
-                'inflation_score' => $inflationScore,
-                'exchange_score' => $exchangeScore,
-                'news_score' => $newsScore,
-                'total_score' => $totalScore,
-                'status' => $status,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $totalScore = \App\Services\RiskService::calculateTotal($weatherScore, $inflationScore, $exchangeScore, $newsScore);
+            $statusStr = \App\Services\RiskService::getStatus($totalScore);
+            $status = strtolower(explode(' ', $statusStr)[0]);
+
+            RiskScore::updateOrCreate(
+                ['country_id' => $country->id],
+                [
+                    'weather_score' => $weatherScore,
+                    'inflation_score' => $inflationScore,
+                    'exchange_score' => $exchangeScore,
+                    'news_score' => $newsScore,
+                    'total_score' => $totalScore,
+                    'status' => $status,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
 }

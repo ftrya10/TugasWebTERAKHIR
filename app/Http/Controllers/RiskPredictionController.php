@@ -17,13 +17,41 @@ class RiskPredictionController extends Controller
             ->orderBy('name')
             ->get()
             ->map(function ($country) {
-                $weatherScore = (float) ($country->weather->weather_score ?? 25);
-                $inflationScore = min(100, max(0, ((float) ($country->inflation ?? 0)) * 8));
-                $exchangeScore = (float) (optional($country->exchangeRate)->exchange_score ?? 30);
-                $newsScore = 40;
+                $rawWeather = (float) ($country->weather->weather_score ?? 3);
+                $weatherScore = $rawWeather <= 10 ? $rawWeather * 10 : $rawWeather;
 
-                $totalRisk = $country->riskScore->total_score ?? RiskService::calculateTotal($weatherScore, $inflationScore, $exchangeScore, $newsScore);
+                $inflation = (float) ($country->inflation ?? 0);
+                $inflationScore = min(100, max(0, $inflation * 12));
+
+                $rawExchange = (float) (optional($country->exchangeRate)->exchange_score ?? 3);
+                $exchangeScore = $rawExchange <= 10 ? $rawExchange * 10 : $rawExchange;
+
+                $firstNews = $country->news->first();
+                if ($firstNews) {
+                    if ($firstNews->sentiment === 'Negative') {
+                        $newsScore = 80;
+                    } elseif ($firstNews->sentiment === 'Neutral') {
+                        $newsScore = 45;
+                    } else {
+                        $newsScore = 15;
+                    }
+                } else {
+                    $newsScore = 30;
+                }
+
+                $totalRisk = RiskService::calculateTotal($weatherScore, $inflationScore, $exchangeScore, $newsScore);
                 $status = RiskService::getStatus($totalRisk);
+
+                if ($country->riskScore) {
+                    $country->riskScore->update([
+                        'weather_score' => $weatherScore,
+                        'inflation_score' => $inflationScore,
+                        'exchange_score' => $exchangeScore,
+                        'news_score' => $newsScore,
+                        'total_score' => $totalRisk,
+                        'status' => strtolower(explode(' ', $status)[0]),
+                    ]);
+                }
 
                 return [
                     'id' => $country->id,

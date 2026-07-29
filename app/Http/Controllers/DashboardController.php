@@ -221,19 +221,19 @@ class DashboardController extends Controller
 
         $highRisk = $riskScores
             ->filter(function ($score) {
-                return $score >= 70;
+                return $score >= 60;
             })
             ->count();
 
         $mediumRisk = $riskScores
             ->filter(function ($score) {
-                return $score >= 30 && $score < 70;
+                return $score >= 35 && $score < 60;
             })
             ->count();
 
         $lowRisk = $riskScores
             ->filter(function ($score) {
-                return $score < 30;
+                return $score < 35;
             })
             ->count();
 

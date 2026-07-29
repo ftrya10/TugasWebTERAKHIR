@@ -36,12 +36,12 @@ export default function Dashboard({ auth, stats, countries, recentNews }) {
     const riskChartData = countries.map(c => ({
         name: c.code,
         fullName: c.name,
-        score: c.riskScore?.total_score || 0
+        score: parseFloat(c.riskScore?.total_score || 0)
     })).sort((a, b) => b.score - a.score).slice(0, 10);
 
     const getRiskColor = (score) => {
-        if (score >= 70) return '#ef4444'; // Red-500
-        if (score >= 30) return '#eab308'; // Yellow-500
+        if (score >= 60) return '#ef4444'; // Red-500
+        if (score >= 35) return '#eab308'; // Yellow-500
         return '#22c55e'; // Green-500
     };
 
@@ -171,7 +171,7 @@ export default function Dashboard({ auth, stats, countries, recentNews }) {
                                     <BarChart data={riskChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.2} />
                                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                                        <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} domain={[0, 100]} />
                                         <RechartsTooltip 
                                             cursor={{fill: 'transparent'}}
                                             contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
@@ -206,7 +206,7 @@ export default function Dashboard({ auth, stats, countries, recentNews }) {
                                                         {news.country?.name || 'Global'}
                                                     </span>
                                                     <span className="text-xs text-slate-500 dark:text-slate-400">
-                                                        {new Date(news.published_at).toLocaleDateString()}
+                                                        {new Date(news.published_at || news.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
                                                     </span>
                                                 </div>
                                                 <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200 line-clamp-2 group-hover:text-blue-500 transition-colors">

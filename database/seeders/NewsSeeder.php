@@ -38,15 +38,15 @@ class NewsSeeder extends Seeder
             if ($type == 1) {
                 $title = $positiveTitles[array_rand($positiveTitles)];
                 $sentiment = 'Positive';
-                $score = 20;
+                $score = 15;
             } elseif ($type == 2) {
                 $title = $neutralTitles[array_rand($neutralTitles)];
                 $sentiment = 'Neutral';
-                $score = 10;
+                $score = 45;
             } else {
                 $title = $negativeTitles[array_rand($negativeTitles)];
                 $sentiment = 'Negative';
-                $score = 0;
+                $score = 80;
             }
 
             News::create([

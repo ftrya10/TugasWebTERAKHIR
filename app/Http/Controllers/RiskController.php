@@ -693,7 +693,7 @@ class RiskController extends Controller
             return 'medium';
         }
 
-        return 'low Risk';
+        return 'low';
     }
 
 

@@ -33,12 +33,12 @@ class RiskService
     public static function getStatus($totalScore)
     {
         $totalScore = (float) ($totalScore ?? 0);
-        if ($totalScore < 33.33) {
-            return 'Low Risk';
-        } elseif ($totalScore < 66.66) {
+        if ($totalScore >= 60) {
+            return 'High Risk';
+        } elseif ($totalScore >= 35) {
             return 'Medium Risk';
         } else {
-            return 'High Risk';
+            return 'Low Risk';
         }
     }
 
