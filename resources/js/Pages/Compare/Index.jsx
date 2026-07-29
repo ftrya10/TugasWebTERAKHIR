@@ -38,8 +38,8 @@ export default function Index({ auth, countries, countryA, countryB }) {
         },
         {
             name: 'Risk Score',
-            [countryAName]: parseFloat(countryA?.riskScore?.total_score) || 0,
-            [countryBName]: parseFloat(countryB?.riskScore?.total_score) || 0,
+            [countryAName]: parseFloat((countryA?.risk_score || countryA?.riskScore)?.total_score) || 0,
+            [countryBName]: parseFloat((countryB?.risk_score || countryB?.riskScore)?.total_score) || 0,
         }
     ];
 
@@ -111,7 +111,7 @@ export default function Index({ auth, countries, countryA, countryB }) {
                                         <div className="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-700">
                                             <span className="text-slate-500 dark:text-slate-400">Risk Score</span>
                                             <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1">
-                                                {country.riskScore?.total_score || 'N/A'}
+                                                {(country.risk_score || country.riskScore)?.total_score || 'N/A'}
                                                 <AlertTriangle className="w-4 h-4 text-amber-500" />
                                             </span>
                                         </div>

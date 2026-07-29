@@ -33,11 +33,14 @@ export default function Dashboard({ auth, stats, countries, recentNews }) {
     };
 
     // Prepare chart data for risk scores
-    const riskChartData = countries.map(c => ({
-        name: c.code,
-        fullName: c.name,
-        score: parseFloat(c.riskScore?.total_score || 0)
-    })).sort((a, b) => b.score - a.score).slice(0, 10);
+    const riskChartData = countries.map(c => {
+        const rs = c.risk_score || c.riskScore;
+        return {
+            name: c.code,
+            fullName: c.name,
+            score: parseFloat(rs?.total_score || 0)
+        };
+    }).sort((a, b) => b.score - a.score).slice(0, 10);
 
     const getRiskColor = (score) => {
         if (score >= 60) return '#ef4444'; // Red-500
@@ -271,9 +274,9 @@ export default function Dashboard({ auth, stats, countries, recentNews }) {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-4">
-                                                {country.exchangeRate ? (
+                                                {(country.exchange_rate || country.exchangeRate) ? (
                                                     <div>
-                                                        <div>{country.exchangeRate.rate} {country.exchangeRate.currency}</div>
+                                                        <div>{(country.exchange_rate || country.exchangeRate).rate} {(country.exchange_rate || country.exchangeRate).currency}</div>
                                                         <div className="text-xs text-slate-500">per USD</div>
                                                     </div>
                                                 ) : <span className="text-slate-400">N/A</span>}
@@ -288,10 +291,10 @@ export default function Dashboard({ auth, stats, countries, recentNews }) {
                                                 ) : <span className="text-slate-400">N/A</span>}
                                             </td>
                                             <td className="px-4 py-4">
-                                                {country.riskScore ? (
-                                                    <div className={`px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 text-xs font-bold border ${getRiskBgColor(country.riskScore.status)}`}>
+                                                {(country.risk_score || country.riskScore) ? (
+                                                    <div className={`px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 text-xs font-bold border ${getRiskBgColor((country.risk_score || country.riskScore).status)}`}>
                                                         <div className="w-1.5 h-1.5 rounded-full bg-current opacity-70"></div>
-                                                        {country.riskScore.status.toUpperCase()}
+                                                        {(country.risk_score || country.riskScore).status.toUpperCase()}
                                                     </div>
                                                 ) : <span className="text-slate-400">Unknown</span>}
                                             </td>

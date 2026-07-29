@@ -101,8 +101,8 @@ export default function Index({ auth, watchlist, countries, watchlistIds }) {
                                             </div>
                                             <div className="bg-white dark:bg-slate-800 rounded-lg p-2">
                                                 <p className="text-xs text-slate-500">Risk</p>
-                                                <p className={`font-bold text-sm capitalize ${getRiskColor(country.riskScore?.status)}`}>
-                                                    {country.riskScore?.status || 'N/A'}
+                                                <p className={`font-bold text-sm capitalize ${getRiskColor((country.risk_score || country.riskScore)?.status)}`}>
+                                                    {(country.risk_score || country.riskScore)?.status || 'N/A'}
                                                 </p>
                                             </div>
                                         </div>

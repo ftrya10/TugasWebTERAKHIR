@@ -64,7 +64,7 @@ export default function Index({ auth, countries }) {
                                                 </div>
                                                 <div>
                                                     <span className="font-medium text-slate-800 dark:text-slate-200">
-                                                        {country.riskScore?.status || 'Unknown'}
+                                                        {(country.risk_score || country.riskScore)?.status || 'Unknown'}
                                                     </span>
                                                     <span className="text-xs ml-1">Risk</span>
                                                 </div>
