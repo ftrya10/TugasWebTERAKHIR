@@ -212,6 +212,58 @@ export default function Show({ auth, country }) {
                         </div>
 
                     </div>
+
+                    {/* Country Specific Real News Intelligence */}
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <Newspaper className="w-5 h-5 text-blue-500" />
+                                Intelijen Berita & Logistik Real: {country.name}
+                            </h3>
+                            <span className="text-xs font-semibold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 rounded-full">
+                                {country.news?.length || 0} Laporan Aktif
+                            </span>
+                        </div>
+
+                        {!country.news || country.news.length === 0 ? (
+                            <p className="text-sm text-slate-500 dark:text-slate-400 py-6 text-center">
+                                Belum ada laporan intelijen berita terbaru untuk {country.name}.
+                            </p>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {country.news.map((item) => (
+                                    <div key={item.id} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 flex flex-col justify-between">
+                                        <div>
+                                            <div className="flex items-center justify-between gap-2 mb-2">
+                                                <span className={`text-xs font-bold px-2.5 py-0.5 rounded-md ${
+                                                    item.sentiment === 'Negative' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' :
+                                                    item.sentiment === 'Positive' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' :
+                                                    'bg-slate-200 text-slate-700 dark:bg-slate-600 dark:text-slate-200'
+                                                }`}>
+                                                    {item.sentiment ? item.sentiment.toUpperCase() : 'BERITA'}
+                                                </span>
+                                                <span className="text-xs text-slate-400">
+                                                    {new Date(item.created_at || Date.now()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                </span>
+                                            </div>
+                                            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">
+                                                {item.title}
+                                            </h4>
+                                            {item.content && (
+                                                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 mb-3">
+                                                    {item.content}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="text-xs text-slate-400 pt-2 border-t border-slate-200/60 dark:border-slate-600/60 flex justify-between items-center">
+                                            <span>Sumber: {item.source || 'Intelijen Global'}</span>
+                                            <span className="font-semibold text-slate-500">Skor Risiko: {item.news_score || 30}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

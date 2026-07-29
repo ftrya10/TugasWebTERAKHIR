@@ -21,12 +21,54 @@ class DashboardController extends Controller
             'weather',
             'exchangeRate',
             'riskScore',
-            'ports'
+            'ports',
+            'news'
         ])->get();
+
+        foreach ($countries as $country) {
+            $rawWeather = (float) ($country->weather->weather_score ?? 3);
+            $weatherScore = $rawWeather <= 10 ? $rawWeather * 10 : $rawWeather;
+
+            $inflation = (float) ($country->inflation ?? 0);
+            $inflationScore = min(100, max(0, $inflation * 12));
+
+            $rawExchange = (float) (optional($country->exchangeRate)->exchange_score ?? 3);
+            $exchangeScore = $rawExchange <= 10 ? $rawExchange * 10 : $rawExchange;
+
+            $firstNews = $country->news->first();
+            if ($firstNews) {
+                if ($firstNews->sentiment === 'Negative') {
+                    $newsScore = 80;
+                } elseif ($firstNews->sentiment === 'Neutral') {
+                    $newsScore = 45;
+                } else {
+                    $newsScore = 15;
+                }
+            } else {
+                $newsScore = 35;
+            }
+
+            $totalCalculated = \App\Services\RiskService::calculateTotal($weatherScore, $inflationScore, $exchangeScore, $newsScore);
+
+            if (!$country->riskScore || (float) $country->riskScore->total_score == 0) {
+                $riskObj = \App\Models\RiskScore::updateOrCreate(
+                    ['country_id' => $country->id],
+                    [
+                        'weather_score' => $weatherScore,
+                        'inflation_score' => $inflationScore,
+                        'exchange_score' => $exchangeScore,
+                        'news_score' => $newsScore,
+                        'total_score' => $totalCalculated,
+                        'status' => strtolower(explode(' ', \App\Services\RiskService::getStatus($totalCalculated))[0]),
+                    ]
+                );
+                $country->setRelation('riskScore', $riskObj);
+            }
+        }
 
         $recentNews = News::with('country')
             ->latest()
-            ->take(5)
+            ->take(30)
             ->get();
 
         /*

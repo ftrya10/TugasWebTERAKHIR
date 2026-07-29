@@ -10,49 +10,58 @@ class ArticleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil user admin sebagai author
         $admin = User::where('email', 'admin@gmail.com')->first();
         $userId = $admin ? $admin->id : 1;
 
         $articles = [
             [
-                'title'    => 'Fakta Inflasi Global & Dampak Logistik ASEAN 2026',
-                'content'  => "• Inflasi Rata-rata ASEAN: 4.2% (melewati target bank sentral 3.0%).\n• Tarif Kargo Kontainer: Naik 15% - 20% secara Year-on-Year (YoY).\n• Kenaikan Harga Bahan Baku: Baja (+12%), Aluminium (+8%), dan Semikonduktor (+15%).\n• Sektor Paling Terdampak: Otomotif, Manufaktur Elektronik, dan Tekstil.\n• Catatan Ringkas: Tekanan biaya logistik diperkirakan bertahan hingga akhir Kuartal III.",
-                'category' => 'Ekonomi',
+                'title'    => 'Indonesia: Analisis Ekspor Nikel, CPO & Kinerja Pelabuhan Tanjung Priok 2026',
+                'content'  => "• PDB & Inflasi Indonesia: PDB $1,32 Triliun | Inflasi 2,84% | Kurs Rp15.890 / USD.\n• Komoditas Ekspor Unggulan: Nikel, CPO (Kelapa Sawit), Produk Tekstil, dan Batubara.\n• Kinerja Pelabuhan Utama: Pelabuhan Tanjung Priok mengendalikan >60% lalu lintas kontainer ekspor-impor nasional.\n• Tantangan Logistik: Gelombang cuaca monsun dan penumpukan sementara pada terminal kontainer.\n• Rekomendasi Intelijen: Perluasan jadwal sandar serta otomatisasi sistem kepabeanan pelabuhan.",
+                'category' => 'Negara',
             ],
             [
-                'title'    => 'Fakta Dampak Risiko Cuaca Ekstrem Pelabuhan Dunia',
-                'content'  => "• Port of Shanghai (China): Penutupan operasional 12 hari akibat badai topan.\n• Port of Singapore: Keterlambatan bongkar muat meningkat rata-rata 2 hari.\n• Pelabuhan Tanjung Priok (Indonesia): Terkendala banjir rob pada area terminal kontainer.\n• Probabilitas Gangguan: Naik hingga 60% untuk rute maritim Pasifik Barat.\n• Rekomendasi Ringkas: Pengalihan rute alternatif dan penambahan stok cadangan komoditas.",
-                'category' => 'Risiko Cuaca',
+                'title'    => 'China: Evaluasi Industri Manufaktur Global & Otomasi Pelabuhan Shanghai',
+                'content'  => "• PDB & Industri China: PDB $17,73 Triliun | Inflasi 0,20% | Kurs 7.25 CNY / USD.\n• Inovasi Smart Port: Port of Shanghai & Ningbo mengimplementasikan terminal kontainer fully automated 24 jam.\n• Rantai Pasok Elektronik: Menjadi hub pasokan komoditas komponen semikonduktor utama dunia.\n• Tantangan Perdagangan: Penyesuaian kuota kargo udara dan maritim di tengah ketidakpastian pasar global.",
+                'category' => 'Negara',
             ],
             [
-                'title'    => 'Fakta Perbandingan Logistik & PDB: Jerman vs Jepang',
-                'content'  => "• PDB & Ranking LPI Jerman: $4.07 Triliun | Ranking LPI Global #1 | Inflasi 2.3%.\n• PDB & Ranking LPI Jepang: $4.23 Triliun | Ranking LPI Global #5 | Inflasi 2.8%.\n• Keunggulan Jerman: Konektivitas jaringan darat EU yang terintegrasi dan stabilitas Euro.\n• Keunggulan Jepang: Efisiensi tinggi sistem Just-In-Time (JIT), namun tertekan volatilitas Yen.",
-                'category' => 'Analisis Komparatif',
+                'title'    => 'Jerman: Jaringan Logistik EU & Analisis Efisiensi Manufaktur Otomotif',
+                'content'  => "• PDB & Inflasi Jerman: PDB $4,07 Triliun | Inflasi 2,30% | Kurs €0,92 / USD.\n• Keunggulan Infrastruktur: Jaringan kereta kargo dan tol terintegrasi tertinggi di kawasan Eropa (#1 LPI).\n• Sektor Otomotif: Tekanan biaya energi mendorong efisiensi rantai pasok bahan baku baja & baterai EV.\n• Outlook Logistik: Stabilitas mata uang Euro mendukung daya saing perdagangan internasional.",
+                'category' => 'Negara',
             ],
             [
-                'title'    => 'Fakta Peran Strategis & Keamanan Selat Malaka',
-                'content'  => "• Volume Perdagangan: 25% - 30% kargo maritim dunia melewati Selat Malaka.\n• Pelabuhan Singapura: Hub transshipment #1 dunia (>37 juta TEU/tahun).\n• Pelabuhan Klang (Malaysia): Alternatif kompetitif dengan pertumbuhan volume +8.5% YoY.\n• Keamanan Maritime: Angka insiden pembajakan turun 40% dalam dekade terakhir.",
-                'category' => 'Geopolitik',
+                'title'    => 'Australia: Kinerja Ekspor Komoditas Tambang Bijih Besi & LNG Ke Asia',
+                'content'  => "• Indikator Ekonomi Australia: PDB $1,68 Triliun | Inflasi 3,60% | Kurs A$1,53 / USD.\n• Komoditas Utama: Bijih Besi, Gas Alam Cair (LNG), dan Produk Pertanian (Gandum & Daging).\n• Rute Logistik Maritim: Waktu transit pengiriman laut 5–10 hari menuju pelabuhan Asia Pasifik.\n• Faktor Risiko: Potensi gangguan badai tropis di perairan barat Australia pada musim tertentu.",
+                'category' => 'Negara',
             ],
             [
-                'title'    => 'Fakta Otomasi & Smart Port Pelabuhan 2026',
-                'content'  => "• Port of Rotterdam: Implementasi sistem Digital Twin & pemantauan sensor IoT 100%.\n• Port of Shanghai (Yangshan): Operasional terminal kontainer fully automated 24 jam.\n• Tanjung Pelepas (Malaysia): Penggunaan algoritma AI untuk penjadwalan sandar kapal.\n• Pertumbuhan Investasi: Pasar pelabuhan pintar tumbuh dengan tingkat CAGR 18%.",
-                'category' => 'Teknologi',
+                'title'    => 'Amerika Serikat: Tren PDB Sektor Teknologi & Efisiensi Pelabuhan Pantai Barat',
+                'content'  => "• Ekonomi & Pasar AS: PDB $25,46 Triliun | Inflasi 3,40% | Kurs $1,00 USD.\n• Hub Logistik Utama: Pelabuhan Los Angeles & Long Beach memproses volume kontainer impor terbesar.\n• Sektor Pendorong: Ekspor produk semikonduktor, perangkat lunak, dan komoditas energi cair.\n• Kebijakan Moneter: Evaluasi suku bunga Federal Reserve menjaga kestabilan transaksi ekspor-impor.",
+                'category' => 'Negara',
             ],
             [
-                'title'    => 'Fakta Pembaruan Kurs & Valuta Asing Global',
-                'content'  => "• IDR (Rupiah Indonesia): Pergerakan stabil pada rentang Rp15.800 - Rp16.000 per USD.\n• CNY (Yuan China): Tertekan di level 7.25 per USD akibat penyesuaian industri manufaktur.\n• EUR (Euro): Menguat moderat di 0.92 per USD pasca kebijakan suku bunga ECB.\n• JPY (Yen Jepang): Berada di kisaran 157.50 per USD.",
-                'category' => 'Mata Uang',
+                'title'    => 'Jepang: Sistem Just-In-Time (JIT) Pelabuhan Tokyo & Stabilitas Yen',
+                'content'  => "• Ekonomi Jepang: PDB $4,23 Triliun | Inflasi 2,80% | Kurs ¥157.50 / USD.\n• Sistem Logistik Presisi: Pelabuhan Tokyo & Yokohama menerapkan jadwal bongkar muat berbasis AI (JIT).\n• Sektor Ekspor: Mesin presisi, otomotif, dan komponen elektronik berteknologi tinggi.\n• Pengaruh Kurs: Volatilitas Yen mempengaruhi margin biaya impor bahan mentah industri.",
+                'category' => 'Negara',
             ],
             [
-                'title'    => 'Fakta Metodologi Risk Score Rantai Pasok',
-                'content'  => "• Komponen Bobot Risk Score: Cuaca (30%), Inflasi (20%), Kurs (10%), Sentimen Berita (40%).\n• Skala Risiko: 0-33 (Risiko Rendah / Hijau), 34-66 (Sedang / Kuning), 67-100 (Tinggi / Merah).\n• Update Data: Otomatis diperbarui setiap 5 menit dari sumber API terverifikasi.\n• Akurasi Historis: Mengukur korelasi hingga 72% dengan kondisi riil lapangan.",
-                'category' => 'Metodologi',
+                'title'    => 'Singapura: Peran Transshipment Hub #1 Dunia & Integrasi Digital Twin Port',
+                'content'  => "• Kinerja Singapura: PDB $466 Miliar | Inflasi 3,00% | Kurs S$1,35 / USD.\n• Kapasitas Pelabuhan: Mengendalikan lebih dari 37 juta TEUs kontainer per tahun sebagai hub global.\n• Teknologi Digital: Monitoring kapal waktu-nyata (Real-time IoT) mengurangi waktu tunggu hingga 30%.\n• Peran Geopolitik: Menjadi pintu gerbang utama lalu lintas maritim Selat Malaka.",
+                'category' => 'Negara',
             ],
             [
-                'title'    => 'Fakta Ekspor Komoditas Utama Australia',
-                'content'  => "• Indikator Utama Australia: PDB $1.67 Triliun | Inflasi 3.6% | Kurs 1.53 AUD/USD.\n• Komoditas Utama Ekspor: Bijih Besi, Batu Bara, dan Gas Alam Cair (LNG).\n• Tujuan Ekspor Dominan: 35% total volume ekspor ditujukan ke kawasan East Asia.\n• Waktu Transit Laut: Rata-rata 5 - 10 hari pengiriman menuju pelabuhan utama Asia.",
+                'title'    => 'United Kingdom: Koridor Perdagangan Pasca-Brexit & Kargo Pelabuhan London',
+                'content'  => "• Profil Ekonomi Inggris: PDB $3,07 Triliun | Inflasi 4,00% | Kurs £0,79 / USD.\n• Pelabuhan Utama: Pelabuhan London & Felixstowe memegang peranan kunci impor bahan baku.\n• Perjanjian Dagang: Pembentukan kemitraan bilateral baru meningkatkan volume kargo jasa & barang.\n• Catatan Risiko: Fluktuasi tarif distribusi kontainer regional menjadi perhatian pengusaha.",
+                'category' => 'Negara',
+            ],
+            [
+                'title'    => 'India: Pertumbuhan Manufaktur Farmasi & Modernisasi Pelabuhan Mumbai',
+                'content'  => "• Ekonomi India: PDB $3,39 Triliun | Inflasi 5,10% | Kurs ₹83.50 / USD.\n• Pertumbuhan Ekspor: Produk farmasi dan tekstil India mencatat rekor lonjakan di pasar global.\n• Proyek Infrastruktur: Modernisasi Pelabuhan Jawaharlal Nehru (Mumbai) tingkatkan arus logistik.\n• Risiko Inflasi: Tekanan inflasi bahan pangan domestik mempengaruhi biaya operasional darat.",
+                'category' => 'Negara',
+            ],
+            [
+                'title'    => 'Malaysia: Eksosistem Semikonduktor & Otomasi AI Pelabuhan Tanjung Pelepas',
+                'content'  => "• Profil Malaysia: PDB $415 Miliar | Inflasi 2,50% | Kurs RM4,72 / USD.\n• Industri Unggulan: Perakitan semikonduktor, komponen elektronik, dan turunan minyak sawit.\n• Pelabuhan Pintar: Pelabuhan Tanjung Pelepas memanfaatkan kecerdasan buatan (AI) untuk alokasi sandar kapal.\n• Integrasi ASEAN: Menjadi mitra logistik strategis dalam rantai pasok Asia Tenggara.",
                 'category' => 'Negara',
             ],
         ];
@@ -64,7 +73,7 @@ class ArticleSeeder extends Seeder
                     'user_id'    => $userId,
                     'content'    => $article['content'],
                     'category'   => $article['category'],
-                    'created_at' => now()->subDays(rand(1, 30)),
+                    'created_at' => now()->subDays(rand(1, 20)),
                     'updated_at' => now(),
                 ]
             );
