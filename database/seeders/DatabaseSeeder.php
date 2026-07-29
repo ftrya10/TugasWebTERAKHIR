@@ -20,6 +20,16 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            \App\Models\News::query()->delete();
+            \App\Models\Article::query()->delete();
+            \App\Models\RiskScore::query()->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+        } catch (\Throwable $e) {
+            // Ignore if tables do not exist yet
+        }
+
         $this->call([
             CountrySeeder::class,
             WeatherSeeder::class,
